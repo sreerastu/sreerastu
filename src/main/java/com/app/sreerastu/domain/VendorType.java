@@ -1,3 +1,4 @@
+/*
 package com.app.sreerastu.domain;
 
 import jakarta.persistence.*;
@@ -22,3 +23,4 @@ public class VendorType {
     @OneToOne(mappedBy = "vendorType")
     protected Vendor vendor;
 }
+*/

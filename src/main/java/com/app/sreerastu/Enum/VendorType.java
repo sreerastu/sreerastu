@@ -1,6 +1,6 @@
 package com.app.sreerastu.Enum;
 
-public enum SubscriptionType {
+public enum VendorType {
     PLATINUM,
     GOLD,
     SILVER;

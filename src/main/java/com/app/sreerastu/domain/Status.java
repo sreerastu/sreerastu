@@ -1,3 +1,4 @@
+/*
 package com.app.sreerastu.domain;
 
 import jakarta.persistence.*;
@@ -21,3 +22,4 @@ public class Status {
     protected Vendor vendor;
 
 }
+*/

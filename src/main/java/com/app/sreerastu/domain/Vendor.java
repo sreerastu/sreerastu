@@ -1,15 +1,15 @@
 package com.app.sreerastu.domain;
 
 import com.app.sreerastu.Enum.Gender;
-import com.app.sreerastu.Enum.SubscriptionType;
 import com.app.sreerastu.Enum.VendorCategory;
+import com.app.sreerastu.Enum.VendorStatus;
+import com.app.sreerastu.Enum.VendorType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import java.sql.Timestamp;
 import java.util.Date;
 
 @Data
@@ -41,29 +41,31 @@ public class Vendor {
     protected String panNumber;
 
     @Enumerated(EnumType.STRING)
-    private SubscriptionType subscriptionType;
+    private  VendorCategory vendorCategory;
 
 /*    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "fk_vendorCategory_Id")
     private VendorCategory vendorCategory;*/
    // protected String vendorCategoryId;
     @Enumerated(EnumType.STRING)
-    protected VendorCategory vendorCategory;
+    protected VendorStatus vendorStatus;
     protected Date registeredDate = new Date(System.currentTimeMillis());
     protected String addressProof;
     protected String subscriptionExpiryDate;
     protected String password;
-    @OneToOne(cascade = CascadeType.ALL)
+   /* @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "vendorTypeId" , referencedColumnName = "vendorTypeId")
-    protected VendorType vendorType;
+    protected VendorType vendorType;*/
     protected Boolean isApproved = false;
-    @OneToOne(cascade = CascadeType.ALL)
+  /*  @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "fk_statusTypeId")
-    protected Status status;
+    protected Status status;*/
    /* @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id", referencedColumnName = "loginTypeId")
     protected LoginType loginType;
 */
+    @Enumerated(EnumType.STRING)
+    protected VendorType vendorType;
 }
 
 

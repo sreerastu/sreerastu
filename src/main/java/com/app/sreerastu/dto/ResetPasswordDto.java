@@ -4,12 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ApiResponse {
+public class ResetPasswordDto {
 
-    private Date timestamp;
-    private String data;
+    private int id;
+    private String emailAddress;
 }

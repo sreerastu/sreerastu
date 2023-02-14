@@ -1,12 +1,16 @@
 package com.app.sreerastu.services;
 
 import com.app.sreerastu.domain.User;
+import com.app.sreerastu.domain.Vendor;
+import com.app.sreerastu.dto.LoginApiDto;
+import com.app.sreerastu.exception.AuthenticationException;
 import com.app.sreerastu.exception.DuplicateUserException;
 import com.app.sreerastu.exception.InvalidUserIdException;
 import com.app.sreerastu.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -58,6 +62,17 @@ public class UserServiceImpl implements UserService {
             throw new InvalidUserIdException("Invalid userId");
         }
         return "User Successfully deleted" + userId;
+    }
+
+    @Override
+    public String login(LoginApiDto loginApiResponse) throws AuthenticationException {
+        User loginResult = userRepository.findByEmailAddressAndPassword(loginApiResponse.getEmailAddress(), loginApiResponse.getPassword());
+
+        //Response
+        if (Objects.isNull(loginResult)) {
+            throw new AuthenticationException("Invalid credentials");
+        }
+        return "Login Successful";
     }
 
  /*   @Override

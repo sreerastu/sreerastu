@@ -1,8 +1,7 @@
 package com.app.sreerastu.services;
 
 import com.app.sreerastu.domain.Vendor;
-import com.app.sreerastu.dto.ApiResponse;
-import com.app.sreerastu.dto.LoginApiResponse;
+import com.app.sreerastu.dto.LoginApiDto;
 import com.app.sreerastu.exception.AuthenticationException;
 import com.app.sreerastu.exception.DuplicateVendorException;
 import com.app.sreerastu.exception.InvalidVendorIdException;
@@ -18,7 +17,9 @@ public interface VendorService {
     Vendor getVendorById(int vendorId) throws VendorNotFoundException;
     String deleteVendor(int vendorId) throws VendorNotFoundException;
 
-    String login(LoginApiResponse loginApiResponse) throws AuthenticationException;
+    String login(LoginApiDto loginApiResponse) throws AuthenticationException;
+
+    List<Vendor> getVendorsByCategoryType(String vendorCategory);
 
 
 }

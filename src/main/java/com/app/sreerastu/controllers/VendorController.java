@@ -5,7 +5,6 @@ import com.app.sreerastu.exception.DuplicateVendorException;
 import com.app.sreerastu.exception.InvalidVendorIdException;
 import com.app.sreerastu.exception.VendorNotFoundException;
 import com.app.sreerastu.services.VendorServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +27,7 @@ public class VendorController {
 
         Vendor createdVendor = vendorService.createVendor(vendor);
         return ResponseEntity.status(HttpStatus.OK).body(createdVendor);
+               // body("Your Application is Under Processing,and Approved with in 24hrs");
     }
 
     @PutMapping("/vendor/{vendorId}")
@@ -46,14 +46,20 @@ public class VendorController {
     @GetMapping("/vendor/{vendorId}")
     public ResponseEntity<?> getVendorById(@PathVariable int vendorId) throws VendorNotFoundException {
 
-            Vendor vendor = vendorService.getVendorById(vendorId);
-            return ResponseEntity.status(HttpStatus.OK).body(vendor);
+        Vendor vendor = vendorService.getVendorById(vendorId);
+        return ResponseEntity.status(HttpStatus.OK).body(vendor);
     }
 
     @DeleteMapping("/vendor/{vendorId}")
     public ResponseEntity<?> deleteVendorById(@PathVariable int vendorId) throws VendorNotFoundException {
         vendorService.deleteVendor(vendorId);
         return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @GetMapping("/vendors/{vendorCategoryType}")
+    public ResponseEntity<?> getVendorsByCategoryType(@PathVariable String vendorCategory) {
+        List<Vendor> vendorsByCategoryType = vendorService.getVendorsByCategoryType(vendorCategory);
+        return ResponseEntity.status(HttpStatus.OK).body(vendorsByCategoryType);
     }
 
 }

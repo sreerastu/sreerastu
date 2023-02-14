@@ -1,5 +1,8 @@
 package com.app.sreerastu.domain;
 
+import com.app.sreerastu.Enum.Gender;
+import com.app.sreerastu.Enum.SubscriptionType;
+import com.app.sreerastu.Enum.VendorCategory;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.sql.Timestamp;
+import java.util.Date;
 
 @Data
 @AllArgsConstructor
@@ -20,43 +24,46 @@ public class Vendor {
     protected int vendorId;
     protected String firstName;
     protected String lastName;
-    protected String gender;
+    @Enumerated(EnumType.STRING)
+    protected Gender gender;
     protected String emailAddress;
     protected String contactNumber;
     protected String alternateNumber;
     protected String contactPerson;
     protected String contactPersonNumber;
-    protected String businessName;
     protected String businessStartDate;
     protected String businessYear;
     protected String businessRegistrationDate;
    /* @Lob
     @Column(name = "businessLogo", length = 1000)
     protected byte[] businessLogo;*/
-    protected String idProof;
-  /*  @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "fk_subscription_Id")
-    private SubscriptionType subscriptionType;*/
-   // protected String subscriptionTypeId;
+    protected String aadharNumber;
+    protected String panNumber;
+
+    @Enumerated(EnumType.STRING)
+    private SubscriptionType subscriptionType;
+
 /*    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "fk_vendorCategory_Id")
     private VendorCategory vendorCategory;*/
    // protected String vendorCategoryId;
-    protected Timestamp registeredDate;
+    @Enumerated(EnumType.STRING)
+    protected VendorCategory vendorCategory;
+    protected Date registeredDate = new Date(System.currentTimeMillis());
     protected String addressProof;
     protected String subscriptionExpiryDate;
     protected String password;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "vendorTypeId" , referencedColumnName = "vendorTypeId")
+    protected VendorType vendorType;
+    protected Boolean isApproved = false;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "fk_statusTypeId")
+    protected Status status;
    /* @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "fk_vendorType_Id")
-    private VendorType vendorType;*/
-   // protected String vendorTypeId;
-    protected Boolean isApproved;
-  /*  @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "fk_status_Id")
-    private Status status;*/
-   // protected String statusId;
-   /* @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "fk_login_Id")
-    protected String loginId;
+    @JoinColumn(name = "address_id", referencedColumnName = "loginTypeId")
+    protected LoginType loginType;
 */
 }
+
+

@@ -1,4 +1,3 @@
-/*
 package com.app.sreerastu.domain;
 
 import jakarta.persistence.*;
@@ -10,13 +9,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Table(name = "STATUS_TBL")
 public class Status {
 
-    @OneToMany(mappedBy = "statusId")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected int statusId;
+    protected int statusTypeId;
+    // Active,InActive,Hold
     protected String statusType;
+    @OneToOne(mappedBy = "status", cascade = CascadeType.ALL)
+    protected Vendor vendor;
 
 }
-*/

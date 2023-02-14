@@ -1,11 +1,15 @@
 package com.app.sreerastu.services;
 
 import com.app.sreerastu.domain.Admin;
+import com.app.sreerastu.domain.Vendor;
+import com.app.sreerastu.dto.LoginApiDto;
 import com.app.sreerastu.exception.AdminNotFoundException;
+import com.app.sreerastu.exception.AuthenticationException;
 import com.app.sreerastu.repositories.AdminRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class AdminServiceImpl implements AdminService {
@@ -57,11 +61,15 @@ public class AdminServiceImpl implements AdminService {
         }
     }
 
-/*
     @Override
-    public LoginApiResponse findByEmailIdAndPassword(LoginApiResponse loginApiResponse) {
-        Admin login = adminRepository.findOneByEmailIdAndPassword();
-        return login;
+    public String login(LoginApiDto loginApiResponse) throws AuthenticationException {
+        Admin loginResult = adminRepository.findByEmailAddressAndPassword(loginApiResponse.getEmailAddress(), loginApiResponse.getPassword());
+
+        //Response
+        if (Objects.isNull(loginResult)) {
+            throw new AuthenticationException("Invalid credentials");
+        }
+        return "Login Successful";
     }
-*/
+
 }

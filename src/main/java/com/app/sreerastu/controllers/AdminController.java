@@ -1,8 +1,11 @@
 package com.app.sreerastu.controllers;
 
 import com.app.sreerastu.domain.Admin;
+import com.app.sreerastu.domain.Vendor;
 import com.app.sreerastu.exception.AdminNotFoundException;
+import com.app.sreerastu.exception.VendorNotFoundException;
 import com.app.sreerastu.services.AdminServiceImpl;
+import com.app.sreerastu.services.VendorServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +23,12 @@ public class AdminController {
     // @Autowired
     private AdminServiceImpl adminService;
 
+  /*  public AdminController(VendorServiceImpl vendorService) {
+        this.vendorService = vendorService;
+    }
+
+    private VendorServiceImpl vendorService;
+*/
     @PostMapping("/admin")
     public ResponseEntity<?> createAdmin(@RequestBody Admin admin) {
 
@@ -51,5 +60,15 @@ public class AdminController {
         adminService.deleteAdminById(adminId);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
+  /*  @GetMapping("/admin/getUnapprovedVendors")
+    public ResponseEntity<?> getUnapprovedVendors() throws VendorNotFoundException {
+        Vendor vendor = new Vendor();
+        if (vendor.getIsApproved()==false) {
+            List<Vendor> unApprovedVendors = vendorService.getAllVendors();
+          //  unApprovedVendors.stream().map(n->n)
+            return ResponseEntity.status(HttpStatus.OK).body(unApprovedVendors);
+        }else
+            throw new VendorNotFoundException("Vendors not found");
+    }*/
 
 }

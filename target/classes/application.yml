@@ -1,6 +1,6 @@
 #server port
 server:
-  port: 31100
+  port: 3100
 
 
 #smtp configuration and database configuration

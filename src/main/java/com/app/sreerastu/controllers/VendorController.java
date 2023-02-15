@@ -1,5 +1,6 @@
 package com.app.sreerastu.controllers;
 
+import com.app.sreerastu.Enum.VendorCategory;
 import com.app.sreerastu.domain.Vendor;
 import com.app.sreerastu.exception.DuplicateVendorException;
 import com.app.sreerastu.exception.InvalidVendorIdException;
@@ -55,11 +56,4 @@ public class VendorController {
         vendorService.deleteVendor(vendorId);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
-
-    @GetMapping("/vendors/{vendorCategoryType}")
-    public ResponseEntity<?> getVendorsByCategoryType(@PathVariable String vendorCategory) {
-        List<Vendor> vendorsByCategoryType = vendorService.getVendorsByCategoryType(vendorCategory);
-        return ResponseEntity.status(HttpStatus.OK).body(vendorsByCategoryType);
-    }
-
 }

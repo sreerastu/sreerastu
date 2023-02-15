@@ -1,5 +1,6 @@
 package com.app.sreerastu.services;
 
+import com.app.sreerastu.Enum.VendorCategory;
 import com.app.sreerastu.domain.Vendor;
 import com.app.sreerastu.dto.LoginApiDto;
 import com.app.sreerastu.exception.AuthenticationException;
@@ -112,11 +113,11 @@ public class VendorServiceImpl implements VendorService {
     }
 
     @Override
-    public List<Vendor> getVendorsByCategoryType(String vendorCategory) {
+    public List<Vendor> getVendorsByCategoryType(VendorCategory vendorCategory) {
 
         List<Vendor> byVendorCategory = vendorRepository.findByVendorCategory(vendorCategory);
 
-        List<Vendor> vendors = byVendorCategory.stream().filter(n -> n.getVendorCategory().equals("VIDEOGRAPHY")).collect(Collectors.toList());
-        return vendors;
+      //  List<Vendor> vendors = byVendorCategory.stream().filter(n -> n.getVendorCategory().equals("VIDEOGRAPHY")).collect(Collectors.toList());
+        return byVendorCategory;
     }
 }

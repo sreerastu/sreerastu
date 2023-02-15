@@ -1,5 +1,6 @@
 package com.app.sreerastu.services;
 
+import com.app.sreerastu.Enum.VendorCategory;
 import com.app.sreerastu.domain.Vendor;
 import com.app.sreerastu.dto.LoginApiDto;
 import com.app.sreerastu.exception.AuthenticationException;
@@ -19,7 +20,7 @@ public interface VendorService {
 
     String login(LoginApiDto loginApiResponse) throws AuthenticationException;
 
-    List<Vendor> getVendorsByCategoryType(String vendorCategory);
+    List<Vendor> getVendorsByCategoryType(VendorCategory vendorCategory);
 
 
 }

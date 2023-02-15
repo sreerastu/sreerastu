@@ -56,4 +56,10 @@ public class VendorController {
         vendorService.deleteVendor(vendorId);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
+    @GetMapping("/vendor/{vendorId}")
+    public ResponseEntity<?> getVendorByVendorCategory(@RequestParam("vendorCategory") VendorCategory vendorCategory) throws VendorNotFoundException {
+
+      List<Vendor> vendors = vendorService.getVendorsByCategoryType(vendorCategory);
+        return ResponseEntity.status(HttpStatus.OK).body(vendors);
+    }
 }

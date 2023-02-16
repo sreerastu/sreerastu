@@ -1,10 +1,14 @@
 package com.app.sreerastu.controllers;
 
+import com.app.sreerastu.Enum.VendorStatus;
 import com.app.sreerastu.domain.User;
+import com.app.sreerastu.domain.Vendor;
 import com.app.sreerastu.exception.DuplicateUserException;
 import com.app.sreerastu.exception.InvalidUserIdException;
+import com.app.sreerastu.exception.InvalidVendorIdException;
+import com.app.sreerastu.exception.VendorNotFoundException;
 import com.app.sreerastu.services.UserServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.app.sreerastu.services.VendorServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +25,12 @@ public class UserController {
 
     // @Autowired
     private UserServiceImpl userService;
+
+  /*  public UserController(VendorServiceImpl vendorService) {
+        this.vendorService = vendorService;
+    }
+
+    private VendorServiceImpl vendorService;*/
 
 
     @PostMapping("/user")
@@ -55,4 +65,13 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
+    /*@PostMapping("/user/booking/{vendorId}/{vendorStatus}")
+    public ResponseEntity<?> bookVendorById(@PathVariable int vendorId,
+                                            @PathVariable VendorStatus vendorStatus) throws  InvalidVendorIdException {
+        Vendor vendorById = vendorService.updateVendorStatus(vendorId,vendorStatus);
+
+
+       // vendorById.setVendorStatus(VendorStatus.valueOf("HOLD"));
+        return ResponseEntity.status(HttpStatus.OK).body(vendorById);
+    }*/
 }

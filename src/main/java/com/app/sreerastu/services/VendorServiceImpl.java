@@ -1,6 +1,7 @@
 package com.app.sreerastu.services;
 
 import com.app.sreerastu.Enum.VendorCategory;
+import com.app.sreerastu.Enum.VendorStatus;
 import com.app.sreerastu.domain.Vendor;
 import com.app.sreerastu.dto.LoginApiDto;
 import com.app.sreerastu.exception.AuthenticationException;
@@ -12,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -63,13 +65,23 @@ public class VendorServiceImpl implements VendorService {
         return vendorRepository.save(existingVendor);
 
     }
-    public Vendor updatePassword(String emailAddress) throws InvalidVendorIdException {
-        Vendor vendor = new Vendor();
-        Vendor existingVendor = vendorRepository.findByEmailAddress(emailAddress);
+
+    public Vendor updatePassword(String newPassword) throws InvalidVendorIdException {
+        Vendor vendor= new Vendor();
+        Vendor existingVendor = vendorRepository.findById(vendor.getVendorId()).orElseThrow(() -> new InvalidVendorIdException("please enter a valid vendorId"));
+
+        HashMap<String,Object>  map = new HashMap<String,Object>();
+        map.put("password",newPassword);
         existingVendor.setPassword(vendor.getPassword());
         return vendorRepository.save(existingVendor);
     }
 
+    public Vendor updateVendorStatus(int vendorId, VendorStatus vendorStatus) throws InvalidVendorIdException {
+        Vendor vendor= new Vendor();
+        Vendor existingVendor = vendorRepository.findById(vendor.getVendorId()).orElseThrow(() -> new InvalidVendorIdException("please enter a valid vendorId"));
+        existingVendor.setVendorStatus(vendor.getVendorStatus());
+        return vendorRepository.save(existingVendor);
+    }
     @Override
     public List<Vendor> getAllVendors() {
       /*  Vendor vendor = new Vendor();
@@ -102,7 +114,7 @@ public class VendorServiceImpl implements VendorService {
     @Override
     public String login(LoginApiDto loginApiResponse) throws AuthenticationException {
 
-        //Verifing vendor exists or not
+        //Verifying vendor exists or not
         Vendor loginResult = vendorRepository.findByEmailAddressAndPassword(loginApiResponse.getEmailAddress(), loginApiResponse.getPassword());
 
         //Response
@@ -110,6 +122,7 @@ public class VendorServiceImpl implements VendorService {
             throw new AuthenticationException("Invalid credentials");
         }
         return "Login Successful";
+
     }
 
     @Override

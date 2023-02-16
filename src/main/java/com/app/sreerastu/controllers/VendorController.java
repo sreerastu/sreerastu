@@ -1,6 +1,7 @@
 package com.app.sreerastu.controllers;
 
 import com.app.sreerastu.Enum.VendorCategory;
+import com.app.sreerastu.Enum.VendorStatus;
 import com.app.sreerastu.domain.Vendor;
 import com.app.sreerastu.exception.DuplicateVendorException;
 import com.app.sreerastu.exception.InvalidVendorIdException;
@@ -28,7 +29,7 @@ public class VendorController {
 
         Vendor createdVendor = vendorService.createVendor(vendor);
         return ResponseEntity.status(HttpStatus.OK).body(createdVendor);
-               // body("Your Application is Under Processing,and Approved with in 24hrs");
+        // body("Your Application is Under Processing,and Approved with in 24hrs");
     }
 
     @PutMapping("/vendor/{vendorId}")
@@ -56,10 +57,15 @@ public class VendorController {
         vendorService.deleteVendor(vendorId);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
+
     @GetMapping("/vendors/categories")
     public ResponseEntity<?> getVendorByVendorCategory(@RequestParam("vendorCategory") VendorCategory vendorCategory) throws VendorNotFoundException {
 
-      List<Vendor> vendors = vendorService.getVendorsByCategoryType(vendorCategory);
+        List<Vendor> vendors = vendorService.getVendorsByCategoryType(vendorCategory);
         return ResponseEntity.status(HttpStatus.OK).body(vendors);
     }
+   /* @PutMapping("/vendor/update/{vendorStatus}")
+    public ResponseEntity<?> updateVendorStatus(@PathVariable VendorStatus vendorStatus){
+
+    }*/
 }

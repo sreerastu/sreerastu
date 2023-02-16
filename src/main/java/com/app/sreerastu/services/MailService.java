@@ -38,7 +38,7 @@ public class MailService {
         helper.setText("Your temporary new password is " + randomPwd + ",Please change your password at application");
         helper.setFrom(sender);
         helper.setTo(emailAddress);
-        vendorService.updatePassword(randomPwd);
+        //vendorService.updatePassword(randomPwd);
         // vendor.setPassword(randomPwd);
         javaMailSender.send(message);
         log.info("Mail Sent Successfully......");

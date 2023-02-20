@@ -18,7 +18,7 @@ public interface VendorService {
     Vendor getVendorById(int vendorId) throws VendorNotFoundException;
     String deleteVendor(int vendorId) throws VendorNotFoundException;
 
-    String login(LoginApiDto loginApiResponse) throws AuthenticationException;
+    Vendor authenticate(String emailAddress,String password) throws AuthenticationException;
 
     List<Vendor> getVendorsByCategoryType(VendorCategory vendorCategory);
 

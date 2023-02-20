@@ -67,14 +67,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String login(LoginApiDto loginApiResponse) throws AuthenticationException {
-        User loginResult = userRepository.findByEmailAddressAndPassword(loginApiResponse.getEmailAddress(), loginApiResponse.getPassword());
+    public User authenticate(String emailAddress, String password) throws AuthenticationException {
+        return userRepository.findByEmailAddressAndPassword(emailAddress,password);
 
-        //Response
+       /* //Response
         if (Objects.isNull(loginResult)) {
             throw new AuthenticationException("Invalid credentials");
         }
-        return "Login Successful";
+        return "Login Successful";*/
     }
     public List<Booking> getBookingsByUserId(int userId) throws UserNotFoundException {
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found"));

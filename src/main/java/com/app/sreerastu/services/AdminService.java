@@ -15,6 +15,6 @@ public interface AdminService {
     Admin getAdminById(int adminId) throws AdminNotFoundException;
     String deleteAdminById(int adminId) throws AdminNotFoundException;
 
-    String login(LoginApiDto loginApiResponse) throws AuthenticationException;
+    Admin authenticate(String emailAddress, String password) throws AuthenticationException;
 
 }

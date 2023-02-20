@@ -62,14 +62,13 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public String login(LoginApiDto loginApiResponse) throws AuthenticationException {
-        Admin loginResult = adminRepository.findByEmailAddressAndPassword(loginApiResponse.getEmailAddress(), loginApiResponse.getPassword());
+    public Admin authenticate(String emailAddress, String password)  {
+      return  adminRepository.findByEmailAddressAndPassword(emailAddress,password);
 
-        //Response
-        if (Objects.isNull(loginResult)) {
+/*        if (Objects.isNull(loginResult)) {
             throw new AuthenticationException("Invalid credentials");
         }
-        return "Login Successful";
+        return "Login Successful";*/
     }
 
 }

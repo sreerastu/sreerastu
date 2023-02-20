@@ -1,5 +1,8 @@
 package com.app.sreerastu.controllers;
 
+import com.app.sreerastu.domain.Admin;
+import com.app.sreerastu.domain.User;
+import com.app.sreerastu.domain.Vendor;
 import com.app.sreerastu.dto.LoginApiDto;
 import com.app.sreerastu.exception.AuthenticationException;
 import com.app.sreerastu.services.AdminServiceImpl;
@@ -10,9 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Arrays;
-import java.util.List;
 
 @RestController
 @RequestMapping("api")
@@ -34,14 +34,27 @@ public class AuthenticationController {
     @PostMapping("/authenticate")
     public ResponseEntity<?> authenticate(@RequestBody LoginApiDto loginCredentials) throws AuthenticationException {
 
-        String vendorLoginResponse = vendorService.login(loginCredentials);
+        // Check if the login credentials belong to a vendor
+        Vendor vendor = vendorService.authenticate(loginCredentials.getEmailAddress()  , loginCredentials.getPassword());
+        if (vendor != null) {
+            return ResponseEntity.ok("Vendor logged in successfully!");
+        }
 
-     //   String userLoginResponse = userService.login(loginCredentials);
-      //  String adminLoginResponse = adminService.login(loginCredentials);
+        // Check if the login credentials belong to a user
+        User user = userService.authenticate(loginCredentials.getEmailAddress(), loginCredentials.getPassword());
+        if (user != null) {
+            return ResponseEntity.ok("User logged in successfully!");
+        }
 
-        return ResponseEntity.status(HttpStatus.OK).body(vendorLoginResponse);
-     //   return Arrays.asList(vendorLoginResponse, userLoginResponse, adminLoginResponse);
+        // Check if the login credentials belong to admin
+        Admin admin = adminService.authenticate(loginCredentials.getEmailAddress(), loginCredentials.getPassword());
 
+        if (admin != null) {
+            return ResponseEntity.ok("Admin logged in successfully!");
+        }
+
+        // If none of the login credentials are valid, return an error response
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
     }
 
     @PostMapping("/resetPassword/{emailAddress}")

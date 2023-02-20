@@ -122,17 +122,17 @@ public class VendorServiceImpl implements VendorService {
     }
 
     @Override
-    public String login(LoginApiDto loginApiResponse) throws AuthenticationException {
+    public Vendor authenticate(String emailAddress,String password) throws AuthenticationException {
 
         //Verifying vendor exists or not
-        Vendor loginResult = vendorRepository.findByEmailAddressAndPassword(loginApiResponse.getEmailAddress(), loginApiResponse.getPassword());
+        return vendorRepository.findByEmailAddressAndPassword(emailAddress,password);
 
-        //Response
+       /* //Response
         if (Objects.isNull(loginResult)) {
             throw new AuthenticationException("Invalid credentials");
         }
         return "Login Successful";
-
+*/
     }
 
     @Override

@@ -17,7 +17,7 @@ public interface UserService {
     User getUserById(int userId) throws InvalidUserIdException;
     String deleteUserById(int userId) throws InvalidUserIdException;
 
-    String login(LoginApiDto loginApiResponse) throws AuthenticationException;
+    User authenticate(String emailAddress, String password) throws AuthenticationException;
 
 
 }

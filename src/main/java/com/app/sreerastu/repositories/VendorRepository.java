@@ -8,8 +8,6 @@ import java.util.List;
 
 public interface VendorRepository extends JpaRepository<Vendor, Integer> {
 
-  //   Optional<Vendor> findByName(String fileName);
-
     Vendor findByEmailAddressAndPassword(String emailAddress , String password);
     List<Vendor> findByVendorCategory(VendorCategory vendorCategory);
 

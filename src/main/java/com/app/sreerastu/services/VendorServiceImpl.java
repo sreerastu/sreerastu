@@ -2,21 +2,25 @@ package com.app.sreerastu.services;
 
 import com.app.sreerastu.Enum.VendorCategory;
 import com.app.sreerastu.Enum.VendorStatus;
+import com.app.sreerastu.domain.Booking;
+import com.app.sreerastu.domain.User;
 import com.app.sreerastu.domain.Vendor;
 import com.app.sreerastu.dto.LoginApiDto;
-import com.app.sreerastu.exception.AuthenticationException;
-import com.app.sreerastu.exception.DuplicateVendorException;
-import com.app.sreerastu.exception.InvalidVendorIdException;
-import com.app.sreerastu.exception.VendorNotFoundException;
+import com.app.sreerastu.exception.*;
+import com.app.sreerastu.repositories.UserRepository;
 import com.app.sreerastu.repositories.VendorRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ReflectionUtils;
 
-import java.util.HashMap;
+import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
+
+//import static com.app.sreerastu.Enum.VendorStatus.HOLD;
 
 
 @Service
@@ -30,6 +34,9 @@ public class VendorServiceImpl implements VendorService {
 
     //  @Autowired
     private VendorRepository vendorRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
 
     private static final String STATUS = "status";
@@ -63,32 +70,36 @@ public class VendorServiceImpl implements VendorService {
         existingVendor.setContactPersonNumber(vendor.getContactPersonNumber());
         existingVendor.setPassword(vendor.getPassword());
         return vendorRepository.save(existingVendor);
+    }
+
+    public Vendor updatePassword(int vendorId, String newPassword) throws VendorNotFoundException {
+
+        Vendor byId = vendorRepository.findById(vendorId).orElseThrow(() -> new VendorNotFoundException("Invalid vendorId"));
+
+        byId.setPassword(newPassword);
+        Vendor save = vendorRepository.save(byId);
+        return save;
+
 
     }
 
-    public Vendor updatePassword(String newPassword) throws InvalidVendorIdException {
-        Vendor vendor= new Vendor();
-        Vendor existingVendor = vendorRepository.findById(vendor.getVendorId()).orElseThrow(() -> new InvalidVendorIdException("please enter a valid vendorId"));
-
-        HashMap<String,Object>  map = new HashMap<String,Object>();
-        map.put("password",newPassword);
-        existingVendor.setPassword(vendor.getPassword());
+    public Vendor updateVendorByFields(int vendorId, Map<String, Object> fields) throws InvalidVendorIdException {
+        Vendor existingVendor = vendorRepository.findById(vendorId).orElseThrow(() -> new InvalidVendorIdException("please enter a valid vendorId"));
+        fields.forEach((key, value) -> {
+            Field field = ReflectionUtils.findField(Vendor.class, key);
+            field.setAccessible(true);
+            ReflectionUtils.setField(field, existingVendor, value);
+        });
         return vendorRepository.save(existingVendor);
     }
 
-    public Vendor updateVendorStatus(int vendorId, VendorStatus vendorStatus) throws InvalidVendorIdException {
-        Vendor vendor= new Vendor();
-        Vendor existingVendor = vendorRepository.findById(vendor.getVendorId()).orElseThrow(() -> new InvalidVendorIdException("please enter a valid vendorId"));
-        existingVendor.setVendorStatus(vendor.getVendorStatus());
-        return vendorRepository.save(existingVendor);
-    }
     @Override
     public List<Vendor> getAllVendors() {
       /*  Vendor vendor = new Vendor();
         if(vendor.getIsApproved()== true) {*/
 
-            List<Vendor> vendors = vendorRepository.findAll();
-            return vendors;
+        List<Vendor> vendors = vendorRepository.findAll();
+        return vendors;
       /*  }else
             throw new RuntimeException();*/
     }
@@ -107,7 +118,6 @@ public class VendorServiceImpl implements VendorService {
             throw new VendorNotFoundException("invalid vendorId passed");
         }
         return "Vendor Successfully deleted" + vendorId;
-
 
     }
 
@@ -130,7 +140,38 @@ public class VendorServiceImpl implements VendorService {
 
         List<Vendor> byVendorCategory = vendorRepository.findByVendorCategory(vendorCategory);
 
-      //  List<Vendor> vendors = byVendorCategory.stream().filter(n -> n.getVendorCategory().equals("VIDEOGRAPHY")).collect(Collectors.toList());
+        //  List<Vendor> vendors = byVendorCategory.stream().filter(n -> n.getVendorCategory().equals("VIDEOGRAPHY")).collect(Collectors.toList());
         return byVendorCategory;
+    }
+
+
+    public Booking bookVendor(int userId, int vendorId) throws VendorNotFoundException, UserNotFoundException, VendorNotAvailableException {
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found"));
+        Vendor vendor = vendorRepository.findById(vendorId).orElseThrow(() -> new VendorNotFoundException("Vendor not found"));
+
+        if (vendor.getVendorStatus() == VendorStatus.ACTIVE) {
+            Booking booking = new Booking();
+            booking.setUser(user);
+            booking.setVendor(vendor);
+            vendor.setVendorStatus(VendorStatus.HOLD);
+            vendorRepository.save(vendor);
+            return booking;
+        } else {
+            throw new VendorNotAvailableException("Vendor not available for booking");
+        }
+    }
+
+    public Vendor updateVendorStatus(int vendorId) throws VendorNotFoundException {
+        Vendor vendor = vendorRepository.findById(vendorId).orElseThrow(() -> new VendorNotFoundException("Vendor not found"));
+
+        if(vendor.getVendorStatus() == VendorStatus.HOLD){
+            vendor.setVendorStatus(VendorStatus.ACTIVE);
+        }
+        return vendor;
+    }
+
+    public List<Booking> getBookingsByVendorId(int vendorId) throws VendorNotFoundException {
+        Vendor vendor = vendorRepository.findById(vendorId).orElseThrow(() -> new VendorNotFoundException("Vendor not found"));
+        return vendor.getBookings();
     }
 }

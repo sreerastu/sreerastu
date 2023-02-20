@@ -19,7 +19,10 @@ spring:
             enable: true
   datasource:
     url: jdbc:postgresql://localhost:5432/sreerastuDb
+#    url: jdbc:postgresql://postgresdb.cu0ghcs3xhjo.us-east-1.rds.amazonaws.com:5432/sreerastuDb
+
     username: postgres
+#    password: Headway123
     password: root
   jpa:
     properties:
@@ -29,21 +32,15 @@ spring:
     hibernate:
       ddl-auto: update
 
-
-
-#smpt configurations
-#mail:
-#  host: smtp.gmail.com
-#  port: 587
-#  protocol: smtp
-#  username: devisaikotari@gmail.com
-#  password: liqiodrybarvgjpx
-#  properties:
-#    mail:
-#      smtp:
-#        auth: true
-#        starttls:
-#          enable: true
+#eureka configuration
+eureka:
+  instance:
+    hostname: postgresdb.cu0ghcs3xhjo.us-east-1.rds.amazonaws.com
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    serviceUrl:
+      defaultZone: http://postgresdb.cu0ghcs3xhjo.us-east-1.rds.amazonaws.com:5432/eureka/
 
 
 
@@ -51,7 +48,3 @@ spring:
 
 
 
-#  format_sql: true
-#
-#
-#    show-sql: true

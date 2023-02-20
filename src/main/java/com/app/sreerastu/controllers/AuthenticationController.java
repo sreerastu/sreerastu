@@ -1,7 +1,6 @@
 package com.app.sreerastu.controllers;
 
 import com.app.sreerastu.dto.LoginApiDto;
-import com.app.sreerastu.dto.ResetPasswordDto;
 import com.app.sreerastu.exception.AuthenticationException;
 import com.app.sreerastu.services.AdminServiceImpl;
 import com.app.sreerastu.services.MailService;
@@ -11,6 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Arrays;
+import java.util.List;
 
 @RestController
 @RequestMapping("api")
@@ -34,10 +36,11 @@ public class AuthenticationController {
 
         String vendorLoginResponse = vendorService.login(loginCredentials);
 
-      //  String userLoginResponse = userService.login(loginCredentials);
-        //String adminLoginResponse = adminService.login(loginCredentials);
+     //   String userLoginResponse = userService.login(loginCredentials);
+      //  String adminLoginResponse = adminService.login(loginCredentials);
 
         return ResponseEntity.status(HttpStatus.OK).body(vendorLoginResponse);
+     //   return Arrays.asList(vendorLoginResponse, userLoginResponse, adminLoginResponse);
 
     }
 

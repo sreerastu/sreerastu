@@ -10,7 +10,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -64,6 +66,10 @@ public class Vendor {
     @JoinColumn(name = "address_id", referencedColumnName = "loginTypeId")
     protected LoginType loginType;
 */
+
+    @OneToMany(mappedBy = "vendor", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Booking> bookings = new ArrayList<>();
+
     @Enumerated(EnumType.STRING)
     protected VendorType vendorType;
 }

@@ -1,28 +1,25 @@
 package com.app.sreerastu.controllers;
 
 import com.app.sreerastu.Enum.VendorCategory;
-import com.app.sreerastu.Enum.VendorStatus;
+import com.app.sreerastu.domain.Booking;
 import com.app.sreerastu.domain.Vendor;
-import com.app.sreerastu.exception.DuplicateVendorException;
-import com.app.sreerastu.exception.InvalidVendorIdException;
-import com.app.sreerastu.exception.VendorNotFoundException;
+import com.app.sreerastu.exception.*;
 import com.app.sreerastu.services.VendorServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("api")
 public class VendorController {
+    private VendorServiceImpl vendorService;
 
     public VendorController(VendorServiceImpl vendorService) {
         this.vendorService = vendorService;
     }
-
-    //  @Autowired
-    private VendorServiceImpl vendorService;
 
     @PostMapping("/vendor")
     public ResponseEntity<?> createVendor(@RequestBody Vendor vendor) throws DuplicateVendorException {
@@ -59,13 +56,32 @@ public class VendorController {
     }
 
     @GetMapping("/vendors/categories")
-    public ResponseEntity<?> getVendorByVendorCategory(@RequestParam("vendorCategory") VendorCategory vendorCategory) throws VendorNotFoundException {
+    public ResponseEntity<?> getVendorByVendorCategory(@RequestParam("vendorCategory") VendorCategory vendorCategory) {
 
         List<Vendor> vendors = vendorService.getVendorsByCategoryType(vendorCategory);
         return ResponseEntity.status(HttpStatus.OK).body(vendors);
     }
-   /* @PutMapping("/vendor/update/{vendorStatus}")
-    public ResponseEntity<?> updateVendorStatus(@PathVariable VendorStatus vendorStatus){
 
-    }*/
+    @PatchMapping("/vendor/{vendorId}")
+    public ResponseEntity<?> updateAnyFields(@PathVariable int vendorId,
+                                             @RequestParam Map<String, Object> fields) throws InvalidVendorIdException {
+        Vendor saved = vendorService.updateVendorByFields(vendorId, fields);
+        return ResponseEntity.status(HttpStatus.OK).body(saved);
+
+    }
+
+    @PutMapping("/vendor/updateStatus/{vendorId}")
+    public ResponseEntity<?> updateVendorStatus(@PathVariable int vendorId) throws VendorNotFoundException {
+        Vendor vendor = vendorService.updateVendorStatus(vendorId);
+        return ResponseEntity.status(HttpStatus.OK).body(vendor);
+
+    }
+
+    @GetMapping("/vendor/bookings/{vendorId}")
+    public ResponseEntity<?> getBookingsByVendorId(@PathVariable int vendorId) throws VendorNotFoundException {
+        List<Booking> booking = vendorService.getBookingsByVendorId(vendorId);
+        return ResponseEntity.status(HttpStatus.OK).body(booking);
+    }
+
+
 }

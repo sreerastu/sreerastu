@@ -1,19 +1,18 @@
 package com.app.sreerastu.controllers;
 
-import com.app.sreerastu.Enum.VendorStatus;
+import com.app.sreerastu.domain.Booking;
 import com.app.sreerastu.domain.User;
 import com.app.sreerastu.domain.Vendor;
-import com.app.sreerastu.exception.DuplicateUserException;
-import com.app.sreerastu.exception.InvalidUserIdException;
-import com.app.sreerastu.exception.InvalidVendorIdException;
-import com.app.sreerastu.exception.VendorNotFoundException;
+import com.app.sreerastu.exception.*;
 import com.app.sreerastu.services.UserServiceImpl;
 import com.app.sreerastu.services.VendorServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("api")
@@ -23,21 +22,18 @@ public class UserController {
         this.userService = userService;
     }
 
-    // @Autowired
     private UserServiceImpl userService;
 
-  /*  public UserController(VendorServiceImpl vendorService) {
-        this.vendorService = vendorService;
-    }
 
-    private VendorServiceImpl vendorService;*/
+    @Autowired
+    private VendorServiceImpl vendorService;
 
 
     @PostMapping("/user")
     public ResponseEntity<?> createUser(@RequestBody User user) throws DuplicateUserException {
 
-            User createdUser = userService.createUser(user);
-            return ResponseEntity.status(HttpStatus.OK).body(createdUser);
+        User createdUser = userService.createUser(user);
+        return ResponseEntity.status(HttpStatus.OK).body(createdUser);
     }
 
     @PutMapping("/user/{userId}")
@@ -53,25 +49,26 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(vendors);
     }
 
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<?> getUserById(@PathVariable int id) throws InvalidUserIdException {
-        User user = userService.getUserById(id);
-        return ResponseEntity.status(HttpStatus.OK).body(user);
-    }
-
     @DeleteMapping("/user/{userId}")
     public ResponseEntity<?> deleteUserById(@PathVariable int userId) throws InvalidUserIdException {
         userService.deleteUserById(userId);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<?> getUserById(@PathVariable int userId) throws InvalidUserIdException {
+        userService.getUserById(userId);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
 
-    /*@PostMapping("/user/booking/{vendorId}/{vendorStatus}")
-    public ResponseEntity<?> bookVendorById(@PathVariable int vendorId,
-                                            @PathVariable VendorStatus vendorStatus) throws  InvalidVendorIdException {
-        Vendor vendorById = vendorService.updateVendorStatus(vendorId,vendorStatus);
+    @PostMapping("/user/booking/{userId}/{vendorId}")
+    public ResponseEntity<Booking> bookVendor(@PathVariable int userId, @PathVariable int vendorId) throws UserNotFoundException, VendorNotFoundException, VendorNotAvailableException {
+        Booking booking = vendorService.bookVendor(userId, vendorId);
+        return ResponseEntity.ok().body(booking);
+    }
+    @GetMapping("/user/bookings/{userId}")
+    public ResponseEntity<?> getBookingsByUserId(@PathVariable int userId) throws UserNotFoundException {
+        List<Booking> bookingsByUserId = userService.getBookingsByUserId(userId);
+        return ResponseEntity.status(HttpStatus.OK).body(bookingsByUserId);
+    }
 
-
-       // vendorById.setVendorStatus(VendorStatus.valueOf("HOLD"));
-        return ResponseEntity.status(HttpStatus.OK).body(vendorById);
-    }*/
 }

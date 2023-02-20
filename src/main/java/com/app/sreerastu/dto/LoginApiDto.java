@@ -8,7 +8,8 @@ import lombok.ToString;
 @Setter
 @ToString
 public class LoginApiDto {
+
     private String emailAddress;
+
     private String password;
-  //  private Map<List<String>,List<String>> LoginStatus= new HashMap<>();
 }

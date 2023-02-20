@@ -1,11 +1,13 @@
 package com.app.sreerastu.services;
 
+import com.app.sreerastu.domain.Booking;
 import com.app.sreerastu.domain.User;
 import com.app.sreerastu.domain.Vendor;
 import com.app.sreerastu.dto.LoginApiDto;
 import com.app.sreerastu.exception.AuthenticationException;
 import com.app.sreerastu.exception.DuplicateUserException;
 import com.app.sreerastu.exception.InvalidUserIdException;
+import com.app.sreerastu.exception.UserNotFoundException;
 import com.app.sreerastu.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -74,16 +76,8 @@ public class UserServiceImpl implements UserService {
         }
         return "Login Successful";
     }
-
- /*   @Override
-    public User findByEmailIdAndPassword(LoginApiResponse loginApiResponse) {
-
-
-        //Validation
-
-
-        //
-        User login = userRepository.findByEmailIdAndPassword(loginApiResponse);
-        return login;
-    }*/
+    public List<Booking> getBookingsByUserId(int userId) throws UserNotFoundException {
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found"));
+        return user.getBookings();
+     }
 }

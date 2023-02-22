@@ -19,5 +19,7 @@ public interface UserService {
 
     User authenticate(String emailAddress, String password) throws AuthenticationException;
 
+    User getUserByMail(String emailAddress);
+
 
 }

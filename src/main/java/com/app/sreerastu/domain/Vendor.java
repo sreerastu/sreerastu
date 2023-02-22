@@ -28,6 +28,7 @@ public class Vendor {
     protected String lastName;
     @Enumerated(EnumType.STRING)
     protected Gender gender;
+    @Column(nullable = false,unique = true)
     protected String emailAddress;
     protected String contactNumber;
     protected String alternateNumber;
@@ -45,27 +46,15 @@ public class Vendor {
     @Enumerated(EnumType.STRING)
     private  VendorCategory vendorCategory;
 
-/*    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "fk_vendorCategory_Id")
-    private VendorCategory vendorCategory;*/
-   // protected String vendorCategoryId;
     @Enumerated(EnumType.STRING)
     protected VendorStatus vendorStatus;
     protected Date registeredDate = new Date(System.currentTimeMillis());
     protected String addressProof;
     protected String subscriptionExpiryDate;
     protected String password;
-   /* @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "vendorTypeId" , referencedColumnName = "vendorTypeId")
-    protected VendorType vendorType;*/
+
     protected Boolean isApproved = false;
-  /*  @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "fk_statusTypeId")
-    protected Status status;*/
-   /* @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "address_id", referencedColumnName = "loginTypeId")
-    protected LoginType loginType;
-*/
+
 
     @OneToMany(mappedBy = "vendor", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Booking> bookings = new ArrayList<>();

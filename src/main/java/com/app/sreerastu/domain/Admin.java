@@ -20,8 +20,9 @@ public class Admin {
     protected String firstName;
     protected String lastName;
     protected String contactNumber;
+    @Column(nullable = false)
     protected String password;
-   // protected Date dob;
+    @Column(nullable = false,unique = true)
     protected String emailAddress;
   /*  @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "fk_login_Id")

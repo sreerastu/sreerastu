@@ -5,6 +5,10 @@ server:
 
 #smtp configuration and database configuration
 spring:
+  main:
+    allow-circular-references: true
+
+
   mail:
     host: smtp.gmail.com
     port: 587
@@ -18,13 +22,13 @@ spring:
           starttls:
             enable: true
   datasource:
-#    url: jdbc:postgresql://localhost:5432/sreerastuDb
-    url: jdbc:postgresql://postgresdb.cu0ghcs3xhjo.us-east-1.rds.amazonaws.com:5432/sreerastuDb
+    url: jdbc:postgresql://localhost:5432/sreerastuDb
+#    url: jdbc:postgresql://postgresdb.cu0ghcs3xhjo.us-east-1.rds.amazonaws.com:5432/sreerastuDb
 
     username: postgres
-    password: Headway123
-#    password: root
-  jpa:
+#    password: Headway123
+    password: root
+  jpa: 
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect

@@ -22,12 +22,10 @@ public class User {
     protected int userId;
     protected String firstName;
     protected String lastName;
+    @Column(unique = true,nullable = false)
     protected String emailAddress;
     protected String contactNumber;
     protected String password;
-    /*  @OneToOne(cascade = CascadeType.ALL)
-      @JoinColumn(name = "fk_login_Id")
-      protected String loginId;*/
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Booking> bookings = new ArrayList<>();
 

@@ -11,5 +11,7 @@ public interface VendorRepository extends JpaRepository<Vendor, Integer> {
     Vendor findByEmailAddressAndPassword(String emailAddress , String password);
     List<Vendor> findByVendorCategory(VendorCategory vendorCategory);
 
+    Vendor findByEmailAddress(String emailAddress);
+
 
 }

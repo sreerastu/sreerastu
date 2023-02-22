@@ -1,21 +1,45 @@
 package com.app.sreerastu.controllers;
 
 import com.app.sreerastu.Enum.VendorCategory;
+import com.app.sreerastu.domain.Admin;
 import com.app.sreerastu.domain.Booking;
+import com.app.sreerastu.domain.User;
 import com.app.sreerastu.domain.Vendor;
-import com.app.sreerastu.exception.*;
+import com.app.sreerastu.exception.DuplicateVendorException;
+import com.app.sreerastu.exception.InvalidVendorIdException;
+import com.app.sreerastu.exception.VendorNotFoundException;
+import com.app.sreerastu.services.AdminServiceImpl;
+import com.app.sreerastu.services.UserServiceImpl;
 import com.app.sreerastu.services.VendorServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
 @RestController
 @RequestMapping("api")
 public class VendorController {
+
+    @Value("${spring.mail.username}")
+    private String sender;
     private VendorServiceImpl vendorService;
+
+    @Autowired
+    private JavaMailSender javaMailSender;
+
+    @Autowired
+    private UserServiceImpl userService;
+
+    @Autowired
+    private AdminServiceImpl adminService;
+
 
     public VendorController(VendorServiceImpl vendorService) {
         this.vendorService = vendorService;
@@ -38,6 +62,7 @@ public class VendorController {
 
     @GetMapping("/vendors")
     public ResponseEntity<?> getAllVendors() {
+
         List<Vendor> vendors = vendorService.getAllVendors();
         return ResponseEntity.status(HttpStatus.OK).body(vendors);
     }
@@ -56,10 +81,27 @@ public class VendorController {
     }
 
     @GetMapping("/vendors/categories")
-    public ResponseEntity<?> getVendorByVendorCategory(@RequestParam("vendorCategory") VendorCategory vendorCategory) {
+    public ResponseEntity<?> getVendorByVendorCategory(@RequestParam("vendorCategory") VendorCategory vendorCategory,
+                                                       Principal principal) throws Exception {
 
         List<Vendor> vendors = vendorService.getVendorsByCategoryType(vendorCategory);
-        return ResponseEntity.status(HttpStatus.OK).body(vendors);
+        String userEmail = null;
+        if (principal != null) {
+            userEmail = principal.getName();
+            User userByMail = userService.getUserByMail(userEmail);
+
+            Admin adminById = adminService.getAdminById(1);
+
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom(sender);
+            message.setTo(adminById.getEmailAddress());
+            message.setSubject("New vendor category selected");
+            message.setText("A user with " + userByMail + "has selected the vendor categories!");
+            javaMailSender.send(message);
+            return ResponseEntity.status(HttpStatus.OK).body(vendors);
+        } else {
+            throw new RuntimeException();
+        }
     }
 
     @PatchMapping("/vendor/{vendorId}")
@@ -70,7 +112,7 @@ public class VendorController {
 
     }
 
-    @PutMapping("/vendor/updateStatus/{vendorId}")
+    @PostMapping("/vendor/updateStatus/{vendorId}")
     public ResponseEntity<?> updateVendorStatus(@PathVariable int vendorId) throws VendorNotFoundException {
         Vendor vendor = vendorService.updateVendorStatus(vendorId);
         return ResponseEntity.status(HttpStatus.OK).body(vendor);
@@ -82,6 +124,5 @@ public class VendorController {
         List<Booking> booking = vendorService.getBookingsByVendorId(vendorId);
         return ResponseEntity.status(HttpStatus.OK).body(booking);
     }
-
 
 }

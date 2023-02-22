@@ -5,7 +5,6 @@ import com.app.sreerastu.Enum.VendorStatus;
 import com.app.sreerastu.domain.Booking;
 import com.app.sreerastu.domain.User;
 import com.app.sreerastu.domain.Vendor;
-import com.app.sreerastu.dto.LoginApiDto;
 import com.app.sreerastu.exception.*;
 import com.app.sreerastu.repositories.UserRepository;
 import com.app.sreerastu.repositories.VendorRepository;
@@ -18,9 +17,7 @@ import org.springframework.util.ReflectionUtils;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-
-//import static com.app.sreerastu.Enum.VendorStatus.HOLD;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -32,15 +29,17 @@ public class VendorServiceImpl implements VendorService {
         this.vendorRepository = vendorRepository;
     }
 
-    //  @Autowired
     private VendorRepository vendorRepository;
 
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private MailService mailService;
 
-    private static final String STATUS = "status";
-    private static final String LOGIN_SUCCESS = "Login Successful";
+    @Autowired
+    private BookingServiceImpl bookingService;
+
 
     public Vendor createVendor(Vendor vendor) throws DuplicateVendorException {
         try {
@@ -95,13 +94,17 @@ public class VendorServiceImpl implements VendorService {
 
     @Override
     public List<Vendor> getAllVendors() {
-      /*  Vendor vendor = new Vendor();
-        if(vendor.getIsApproved()== true) {*/
 
         List<Vendor> vendors = vendorRepository.findAll();
-        return vendors;
-      /*  }else
-            throw new RuntimeException();*/
+       /* if (vendor.getIsApproved() == true) {
+            return vendors;
+        } else
+            throw new RuntimeException("There are No Approved Vendors ");*/
+        List<Vendor> collection = vendors.stream().filter(n -> n.getIsApproved() == true).collect(Collectors.toList());
+
+        return collection;
+
+        // return vendors;
     }
 
     @Override
@@ -122,26 +125,34 @@ public class VendorServiceImpl implements VendorService {
     }
 
     @Override
-    public Vendor authenticate(String emailAddress,String password) throws AuthenticationException {
-
-        //Verifying vendor exists or not
-        return vendorRepository.findByEmailAddressAndPassword(emailAddress,password);
-
-       /* //Response
-        if (Objects.isNull(loginResult)) {
-            throw new AuthenticationException("Invalid credentials");
-        }
-        return "Login Successful";
-*/
+    public Vendor authenticate(String emailAddress, String password) throws AuthenticationException {
+        return vendorRepository.findByEmailAddressAndPassword(emailAddress, password);
     }
 
     @Override
-    public List<Vendor> getVendorsByCategoryType(VendorCategory vendorCategory) {
+    public List<Vendor> getVendorsByCategoryType(VendorCategory vendorCategory) throws Exception {
 
         List<Vendor> byVendorCategory = vendorRepository.findByVendorCategory(vendorCategory);
 
-        //  List<Vendor> vendors = byVendorCategory.stream().filter(n -> n.getVendorCategory().equals("VIDEOGRAPHY")).collect(Collectors.toList());
+
+
+
+
+        /* Vendor vendor = new Vendor();
+        String emailAddress = vendor.getEmailAddress();
+
+        mailService.sendMailBySearch(emailAddress);*/
+
+       /* Admin admin = new Admin();
+        String emailAddress = admin.getEmailAddress();
+        mailService.sendMailBySearch(emailAddress);*/
+
         return byVendorCategory;
+    }
+
+    @Override
+    public Vendor getVendorByEmailAddress(String emailAddress) {
+        return vendorRepository.findByEmailAddress(emailAddress);
     }
 
 
@@ -153,6 +164,8 @@ public class VendorServiceImpl implements VendorService {
             Booking booking = new Booking();
             booking.setUser(user);
             booking.setVendor(vendor);
+          //  bookingService.createBooking(booking);
+
             vendor.setVendorStatus(VendorStatus.HOLD);
             vendorRepository.save(vendor);
             return booking;
@@ -164,14 +177,33 @@ public class VendorServiceImpl implements VendorService {
     public Vendor updateVendorStatus(int vendorId) throws VendorNotFoundException {
         Vendor vendor = vendorRepository.findById(vendorId).orElseThrow(() -> new VendorNotFoundException("Vendor not found"));
 
-        if(vendor.getVendorStatus() == VendorStatus.HOLD){
+        if (vendor.getVendorStatus() == VendorStatus.HOLD) {
             vendor.setVendorStatus(VendorStatus.ACTIVE);
+            vendorRepository.save(vendor);
         }
         return vendor;
     }
+
 
     public List<Booking> getBookingsByVendorId(int vendorId) throws VendorNotFoundException {
         Vendor vendor = vendorRepository.findById(vendorId).orElseThrow(() -> new VendorNotFoundException("Vendor not found"));
         return vendor.getBookings();
     }
+
+
+    public Vendor updateIsApproved(int vendorId) throws VendorNotFoundException {
+        Vendor vendor = vendorRepository.findById(vendorId).orElseThrow(() -> new VendorNotFoundException("Vendor not found"));
+        vendor.setIsApproved(true);
+        Vendor vendorX = vendorRepository.save(vendor);
+        return vendorX;
+    }
+
+    public List<Vendor> getAllUnApprovedVendors() {
+        List<Vendor> vendors = vendorRepository.findAll();
+
+        List<Vendor> collection = vendors.stream().filter(n -> n.getIsApproved() == false).collect(Collectors.toList());
+
+        return collection;
+    }
 }
+

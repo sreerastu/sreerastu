@@ -1,6 +1,7 @@
 package com.app.sreerastu.services;
 
 import com.app.sreerastu.domain.Vendor;
+import com.app.sreerastu.repositories.VendorRepository;
 import jakarta.mail.internet.MimeMessage;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
@@ -18,10 +19,13 @@ public class MailService {
     @Value("${spring.mail.username}")
     private String sender;
 
+    private VendorRepository vendorRepository;
+
     private JavaMailSender javaMailSender;
     private VendorServiceImpl vendorService;
 
-    public MailService(JavaMailSender javaMailSender, VendorServiceImpl vendorService) {
+    public MailService(VendorRepository vendorRepository, JavaMailSender javaMailSender, VendorServiceImpl vendorService) {
+        this.vendorRepository = vendorRepository;
         this.javaMailSender = javaMailSender;
         this.vendorService = vendorService;
     }
@@ -38,8 +42,9 @@ public class MailService {
         helper.setText("Your temporary new password is " + randomPwd + ",Please change your password at application");
         helper.setFrom(sender);
         helper.setTo(emailAddress);
-        //vendorService.updatePassword(randomPwd);
-        // vendor.setPassword(randomPwd);
+        Vendor vendorByEmailAddress = vendorService.getVendorByEmailAddress(emailAddress);
+        vendorByEmailAddress.setPassword(randomPwd);
+        vendorRepository.save(vendorByEmailAddress);
         javaMailSender.send(message);
         log.info("Mail Sent Successfully......");
         return randomPwd;
@@ -52,6 +57,20 @@ public class MailService {
         String pwd = RandomStringUtils.random(10, characters);
         log.info(pwd);
         return pwd;
+    }
+
+    public String sendMailBySearch(String emailAddress) throws Exception {
+
+        MimeMessage message = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message);
+        helper.setSubject("User is Searching! ");
+        helper.setText("user is searching for vendors!");
+        helper.setFrom(sender);
+        helper.setTo(emailAddress);
+        javaMailSender.send(message);
+        log.info("Mail Sent Successfully......");
+        return "Mail Sent Successfully......!";
+
     }
 
 }

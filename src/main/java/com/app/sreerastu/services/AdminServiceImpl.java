@@ -1,15 +1,11 @@
 package com.app.sreerastu.services;
 
 import com.app.sreerastu.domain.Admin;
-import com.app.sreerastu.domain.Vendor;
-import com.app.sreerastu.dto.LoginApiDto;
 import com.app.sreerastu.exception.AdminNotFoundException;
-import com.app.sreerastu.exception.AuthenticationException;
 import com.app.sreerastu.repositories.AdminRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class AdminServiceImpl implements AdminService {
@@ -31,7 +27,7 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public Admin updateAdmin(int adminId, Admin admin) throws AdminNotFoundException {
 
-        Admin existingAdmin = adminRepository.findById(adminId).orElseThrow(()->new AdminNotFoundException("Invalid adminId"));
+        Admin existingAdmin = adminRepository.findById(adminId).orElseThrow(() -> new AdminNotFoundException("Invalid adminId"));
         existingAdmin.setFirstName(admin.getFirstName());
         existingAdmin.setLastName(admin.getLastName());
         existingAdmin.setContactNumber(admin.getContactNumber());
@@ -48,22 +44,22 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public Admin getAdminById(int adminId) throws AdminNotFoundException {
-        return adminRepository.findById(adminId).orElseThrow(()->new AdminNotFoundException("Invalid adminId"));
+        return adminRepository.findById(adminId).orElseThrow(() -> new AdminNotFoundException("Invalid adminId"));
     }
 
     @Override
     public String deleteAdminById(int adminId) throws AdminNotFoundException {
-        try{
-        adminRepository.deleteById(adminId);
-        return "Admin Successfully deleted";
-    }catch (Exception ex){
+        try {
+            adminRepository.deleteById(adminId);
+            return "Admin Successfully deleted";
+        } catch (Exception ex) {
             throw new AdminNotFoundException("Invalid adminId");
         }
     }
 
     @Override
-    public Admin authenticate(String emailAddress, String password)  {
-      return  adminRepository.findByEmailAddressAndPassword(emailAddress,password);
+    public Admin authenticate(String emailAddress, String password) {
+        return adminRepository.findByEmailAddressAndPassword(emailAddress, password);
 
 /*        if (Objects.isNull(loginResult)) {
             throw new AuthenticationException("Invalid credentials");

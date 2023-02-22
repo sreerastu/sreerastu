@@ -20,7 +20,9 @@ public interface VendorService {
 
     Vendor authenticate(String emailAddress,String password) throws AuthenticationException;
 
-    List<Vendor> getVendorsByCategoryType(VendorCategory vendorCategory);
+    List<Vendor> getVendorsByCategoryType(VendorCategory vendorCategory) throws Exception;
+
+    Vendor getVendorByEmailAddress(String emailAddress);
 
 
 }

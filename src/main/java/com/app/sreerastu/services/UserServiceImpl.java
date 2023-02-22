@@ -76,6 +76,12 @@ public class UserServiceImpl implements UserService {
         }
         return "Login Successful";*/
     }
+
+    @Override
+    public User getUserByMail(String emailAddress) {
+        return userRepository.findByEmailAddress(emailAddress);
+    }
+
     public List<Booking> getBookingsByUserId(int userId) throws UserNotFoundException {
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found"));
         return user.getBookings();

@@ -33,7 +33,7 @@ public class MailService {
 
     public String sendMail(String emailAddress) throws Exception {
 
-       // Vendor vendor = new Vendor();
+        // Vendor vendor = new Vendor();
 
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);

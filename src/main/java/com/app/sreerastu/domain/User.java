@@ -26,8 +26,8 @@ public class User {
     protected String emailAddress;
     protected String contactNumber;
     protected String password;
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Booking> bookings = new ArrayList<>();
+   /* @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Booking> bookings = new ArrayList<>();*/
 
 
 }

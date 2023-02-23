@@ -10,9 +10,13 @@ import java.util.List;
 public interface AdminService {
 
     Admin createAdmin(Admin admin);
-    Admin updateAdmin(int adminId,Admin admin) throws AdminNotFoundException;
+
+    Admin updateAdmin(int adminId, Admin admin) throws AdminNotFoundException;
+
     List<Admin> getAllAdmins();
+
     Admin getAdminById(int adminId) throws AdminNotFoundException;
+
     String deleteAdminById(int adminId) throws AdminNotFoundException;
 
     Admin authenticate(String emailAddress, String password) throws AuthenticationException;

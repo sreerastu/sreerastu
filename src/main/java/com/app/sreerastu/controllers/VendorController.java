@@ -2,7 +2,6 @@ package com.app.sreerastu.controllers;
 
 import com.app.sreerastu.Enum.VendorCategory;
 import com.app.sreerastu.domain.Admin;
-import com.app.sreerastu.domain.Booking;
 import com.app.sreerastu.domain.User;
 import com.app.sreerastu.domain.Vendor;
 import com.app.sreerastu.exception.DuplicateVendorException;
@@ -117,12 +116,6 @@ public class VendorController {
         Vendor vendor = vendorService.updateVendorStatus(vendorId);
         return ResponseEntity.status(HttpStatus.OK).body(vendor);
 
-    }
-
-    @GetMapping("/vendor/bookings/{vendorId}")
-    public ResponseEntity<?> getBookingsByVendorId(@PathVariable int vendorId) throws VendorNotFoundException {
-        List<Booking> booking = vendorService.getBookingsByVendorId(vendorId);
-        return ResponseEntity.status(HttpStatus.OK).body(booking);
     }
 
 }

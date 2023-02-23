@@ -1,18 +1,13 @@
 package com.app.sreerastu.services;
 
-import com.app.sreerastu.domain.Booking;
 import com.app.sreerastu.domain.User;
-import com.app.sreerastu.domain.Vendor;
-import com.app.sreerastu.dto.LoginApiDto;
 import com.app.sreerastu.exception.AuthenticationException;
 import com.app.sreerastu.exception.DuplicateUserException;
 import com.app.sreerastu.exception.InvalidUserIdException;
-import com.app.sreerastu.exception.UserNotFoundException;
 import com.app.sreerastu.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -21,7 +16,6 @@ public class UserServiceImpl implements UserService {
         this.userRepository = userRepository;
     }
 
-    // @Autowired
     private UserRepository userRepository;
 
 
@@ -68,7 +62,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User authenticate(String emailAddress, String password) throws AuthenticationException {
-        return userRepository.findByEmailAddressAndPassword(emailAddress,password);
+        return userRepository.findByEmailAddressAndPassword(emailAddress, password);
 
        /* //Response
         if (Objects.isNull(loginResult)) {
@@ -82,8 +76,8 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByEmailAddress(emailAddress);
     }
 
-    public List<Booking> getBookingsByUserId(int userId) throws UserNotFoundException {
+   /* public List<Booking> getBookingsByUserId(int userId) throws UserNotFoundException {
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found"));
         return user.getBookings();
-     }
+     }*/
 }

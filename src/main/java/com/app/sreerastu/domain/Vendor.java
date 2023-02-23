@@ -55,9 +55,11 @@ public class Vendor {
 
     protected Boolean isApproved = false;
 
+/*
 
     @OneToMany(mappedBy = "vendor", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Booking> bookings = new ArrayList<>();
+*/
 
     @Enumerated(EnumType.STRING)
     protected VendorType vendorType;

@@ -134,19 +134,6 @@ public class VendorServiceImpl implements VendorService {
 
         List<Vendor> byVendorCategory = vendorRepository.findByVendorCategory(vendorCategory);
 
-
-
-
-
-        /* Vendor vendor = new Vendor();
-        String emailAddress = vendor.getEmailAddress();
-
-        mailService.sendMailBySearch(emailAddress);*/
-
-       /* Admin admin = new Admin();
-        String emailAddress = admin.getEmailAddress();
-        mailService.sendMailBySearch(emailAddress);*/
-
         return byVendorCategory;
     }
 
@@ -164,7 +151,7 @@ public class VendorServiceImpl implements VendorService {
             Booking booking = new Booking();
             booking.setUser(user);
             booking.setVendor(vendor);
-          //  bookingService.createBooking(booking);
+            //  bookingService.createBooking(booking);
 
             vendor.setVendorStatus(VendorStatus.HOLD);
             vendorRepository.save(vendor);
@@ -185,11 +172,11 @@ public class VendorServiceImpl implements VendorService {
     }
 
 
-    public List<Booking> getBookingsByVendorId(int vendorId) throws VendorNotFoundException {
+   /* public List<Booking> getBookingsByVendorId(int vendorId) throws VendorNotFoundException {
         Vendor vendor = vendorRepository.findById(vendorId).orElseThrow(() -> new VendorNotFoundException("Vendor not found"));
         return vendor.getBookings();
     }
-
+*/
 
     public Vendor updateIsApproved(int vendorId) throws VendorNotFoundException {
         Vendor vendor = vendorRepository.findById(vendorId).orElseThrow(() -> new VendorNotFoundException("Vendor not found"));

@@ -64,7 +64,7 @@ public class AdminController {
 
     @GetMapping("/admin/unApprovedVendors")
     public ResponseEntity<?> getAllUnApprovedVendors() throws VendorNotFoundException {
-        List<Vendor> vendors= vendorService.getAllUnApprovedVendors();
+        List<Vendor> vendors = vendorService.getAllUnApprovedVendors();
         return ResponseEntity.status(HttpStatus.OK).body(vendors);
     }
 

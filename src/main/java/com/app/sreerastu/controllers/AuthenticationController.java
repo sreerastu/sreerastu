@@ -35,7 +35,7 @@ public class AuthenticationController {
     public ResponseEntity<?> authenticate(@RequestBody LoginApiDto loginCredentials) throws AuthenticationException {
 
         // Check if the login credentials belong to a vendor
-        Vendor vendor = vendorService.authenticate(loginCredentials.getEmailAddress()  , loginCredentials.getPassword());
+        Vendor vendor = vendorService.authenticate(loginCredentials.getEmailAddress(), loginCredentials.getPassword());
         if (vendor != null) {
             return ResponseEntity.ok("Vendor logged in successfully!");
         }

@@ -6,6 +6,8 @@ import com.app.sreerastu.exception.UserNotFoundException;
 import com.app.sreerastu.exception.VendorNotAvailableException;
 import com.app.sreerastu.exception.VendorNotFoundException;
 import com.app.sreerastu.services.BookingServiceImpl;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -46,7 +48,9 @@ public class BookingController {
     }
 
     @DeleteMapping("/booking/{bookingId}")
-    public void cancelBooking(@PathVariable int bookingId) throws BookingNotFoundException {
-        bookingService.cancelBooking(bookingId);
+    public ResponseEntity<?> cancelBooking(@PathVariable int bookingId) throws BookingNotFoundException {
+        String cancel = bookingService.cancelBooking(bookingId);
+        return ResponseEntity.status(HttpStatus.OK).body(cancel);
+
     }
 }

@@ -86,7 +86,7 @@ public class BookingServiceImpl implements BookingService {
 
 
     @Override
-    public void cancelBooking(int bookingId) throws BookingNotFoundException {
+    public String cancelBooking(int bookingId) throws BookingNotFoundException {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new BookingNotFoundException("Booking not found with id " + bookingId));
 
@@ -94,5 +94,7 @@ public class BookingServiceImpl implements BookingService {
         vendor.setVendorStatus(VendorStatus.ACTIVE);
         vendorRepository.save(vendor);
         bookingRepository.delete(booking);
+        return "Booking Cancelled Successfully!";
     }
+
 }

@@ -61,7 +61,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(exceptionResponse, HttpStatus.NOT_FOUND);
     }
     @ExceptionHandler(BookingNotFoundException.class)
-    public ResponseEntity<?> handleBookingNotFoundException(VendorNotFoundException ex, WebRequest request){
+    public ResponseEntity<?> handleBookingNotFoundException(BookingNotFoundException ex, WebRequest request){
 
         ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(),
                 request.getDescription(false), HttpStatus.NOT_FOUND);
@@ -69,7 +69,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(exceptionResponse, HttpStatus.NOT_FOUND);
     }
     @ExceptionHandler(VendorNotAvailableException.class)
-    public ResponseEntity<?> handleVendorNotAvailableException(VendorNotFoundException ex, WebRequest request){
+    public ResponseEntity<?> handleVendorNotAvailableException(VendorNotAvailableException ex, WebRequest request){
 
         ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(),
                 request.getDescription(false), HttpStatus.NOT_FOUND);

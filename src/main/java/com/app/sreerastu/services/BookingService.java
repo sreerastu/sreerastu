@@ -15,7 +15,7 @@ public interface BookingService {
 
     Booking createBooking(int userId, int vendorId) throws UserNotFoundException, VendorNotFoundException, VendorNotAvailableException;
 
-    void cancelBooking(int bookingId) throws BookingNotFoundException;
+    String cancelBooking(int bookingId) throws BookingNotFoundException;
 
     List<Booking> getBookingsByUserId(int userId) throws UserNotFoundException;
 

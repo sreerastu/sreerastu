@@ -37,9 +37,9 @@ public class Vendor {
     protected String businessStartDate;
     protected String businessYear;
     protected String businessRegistrationDate;
-   /* @Lob
-    @Column(name = "businessLogo", length = 1000)
-    protected byte[] businessLogo;*/
+    /*@Lob
+    @Column(name = "logo", nullable = true)
+    private byte[] logo;*/
     protected String aadharNumber;
     protected String panNumber;
 
@@ -54,12 +54,6 @@ public class Vendor {
     protected String password;
 
     protected Boolean isApproved = false;
-
-/*
-
-    @OneToMany(mappedBy = "vendor", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Booking> bookings = new ArrayList<>();
-*/
 
     @Enumerated(EnumType.STRING)
     protected VendorType vendorType;

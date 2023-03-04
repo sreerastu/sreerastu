@@ -7,20 +7,25 @@ import com.app.sreerastu.domain.Vendor;
 import com.app.sreerastu.exception.DuplicateVendorException;
 import com.app.sreerastu.exception.InvalidVendorIdException;
 import com.app.sreerastu.exception.VendorNotFoundException;
+import com.app.sreerastu.repositories.VendorRepository;
 import com.app.sreerastu.services.AdminServiceImpl;
 import com.app.sreerastu.services.UserServiceImpl;
 import com.app.sreerastu.services.VendorServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("api")
@@ -29,6 +34,9 @@ public class VendorController {
     @Value("${spring.mail.username}")
     private String sender;
     private VendorServiceImpl vendorService;
+   /* @Autowired
+    private VendorRepository vendorRepository;
+*/
 
     @Autowired
     private JavaMailSender javaMailSender;
@@ -117,5 +125,30 @@ public class VendorController {
         return ResponseEntity.status(HttpStatus.OK).body(vendor);
 
     }
+
+  /*  @PostMapping("/vendors/{id}/image")
+    public ResponseEntity<?> uploadImage(@PathVariable int vendorId, @RequestParam("file") MultipartFile file) throws VendorNotFoundException {
+        Vendor vendor = vendorService.getVendorById(vendorId);
+
+        try {
+            vendor.setLogo(file.getBytes());
+            vendorRepository.save(vendor);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to upload image");
+        }
+    }
+
+    @GetMapping("/vendors/{id}/image")
+    public ResponseEntity<byte[]> getImage(@PathVariable int vendorId) throws VendorNotFoundException {
+        Vendor vendor = vendorRepository.findById(vendorId).get();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.IMAGE_JPEG);
+        headers.setContentLength(vendor.getLogo().length);
+        return new ResponseEntity<>(vendor.getLogo(), headers, HttpStatus.OK);
+    }
+*/
+
 
 }

@@ -1,5 +1,8 @@
 package com.app.sreerastu.controllers;
 
+import com.app.sreerastu.domain.Admin;
+import com.app.sreerastu.domain.User;
+import com.app.sreerastu.domain.Vendor;
 import com.app.sreerastu.dto.JwtResponse;
 import com.app.sreerastu.dto.LoginApiDto;
 import com.app.sreerastu.exception.AuthenticationException;
@@ -53,35 +56,37 @@ public class AuthenticationController {
             ex.printStackTrace();
             throw new AuthenticationException("Invalid details provided");
         }
-        try {
-            String token;
-            UserDetails vendorDetails = this.vendorService.loadUserByUsername(loginCredentials.getEmailAddress());
-            if (vendorDetails != null) {
-                String role = vendorDetails.getAuthorities().iterator().next().getAuthority();
-                token = this.jwtUtil.generateToken(vendorDetails, role);
-                log.info("JWT" + token);
-                return ResponseEntity.ok(new JwtResponse(token));
-            }
-            UserDetails userDetails = this.userService.loadUserByUsername(loginCredentials.getEmailAddress());
-            if (userDetails != null) {
-                String role = userDetails.getAuthorities().iterator().next().getAuthority();
-                token = this.jwtUtil.generateToken(userDetails, role);
-                log.info("JWT" + token);
-                return ResponseEntity.ok(new JwtResponse(token));
-            }
-            UserDetails adminDetails = this.adminService.loadUserByUsername(loginCredentials.getEmailAddress());
-            if (adminDetails != null) {
-                String role = adminDetails.getAuthorities().iterator().next().getAuthority();
-                token = this.jwtUtil.generateToken(adminDetails, role);
-                log.info("JWT" + token);
-                return ResponseEntity.ok(new JwtResponse(token));
-            }
-        } catch (Exception ex) {
+
+
+        Object obj = vendorService.findUserOrVendorOrAdminByEmailAddress(loginCredentials.getEmailAddress());
+
+        String role = null;
+        UserDetails userDetails = null;
+        switch (obj.getClass().getSimpleName()) {
+            case "User":
+                role = ((User) obj).getRole().toString();
+                userDetails = this.userService.loadUserByUsername(loginCredentials.getEmailAddress());
+                break;
+            case "Vendor":
+                role = ((Vendor) obj).getRole().toString();
+                userDetails = this.vendorService.loadUserByUsername(loginCredentials.getEmailAddress());
+                break;
+            case "Admin":
+                role = ((Admin) obj).getRole().toString();
+                userDetails = this.adminService.loadUserByUsername(loginCredentials.getEmailAddress());
+                break;
+            default:
+                throw new UsernameNotFoundException("User not found with email address: " + loginCredentials.getEmailAddress());
+        }
+
+        if (userDetails != null) {
+            String token = this.jwtUtil.generateToken(userDetails, role);
+            log.info("JWT" + token);
+            return ResponseEntity.ok(new JwtResponse(token));
+        } else {
             throw new UsernameNotFoundException("User not found with email address: " + loginCredentials.getEmailAddress());
         }
-        return null;
     }
-
     @PostMapping("/resetPassword/{emailAddress}")
     public ResponseEntity<?> resetPassword(@PathVariable String emailAddress) throws Exception {
 
@@ -89,5 +94,5 @@ public class AuthenticationController {
 
         return ResponseEntity.status(HttpStatus.OK).build();
 
-    }
+    } 
 }

@@ -2,11 +2,13 @@ package com.app.sreerastu.services;
 
 import com.app.sreerastu.Enum.VendorCategory;
 import com.app.sreerastu.Enum.VendorStatus;
+import com.app.sreerastu.domain.User;
 import com.app.sreerastu.domain.Vendor;
 import com.app.sreerastu.exception.AuthenticationException;
 import com.app.sreerastu.exception.DuplicateVendorException;
 import com.app.sreerastu.exception.InvalidVendorIdException;
 import com.app.sreerastu.exception.VendorNotFoundException;
+import com.app.sreerastu.repositories.AdminRepository;
 import com.app.sreerastu.repositories.UserRepository;
 import com.app.sreerastu.repositories.VendorRepository;
 import org.slf4j.Logger;
@@ -38,6 +40,8 @@ public class VendorServiceImpl implements VendorService, UserDetailsService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private AdminRepository adminRepository;
     @Autowired
     private MailService mailService;
 
@@ -180,5 +184,18 @@ public class VendorServiceImpl implements VendorService, UserDetailsService {
         }
         return new org.springframework.security.core.userdetails.User(vendor.getEmailAddress(), vendor.getPassword(), vendor.getAuthorities());
     }
+
+    public Object findUserOrVendorOrAdminByEmailAddress(String emailAddress) {
+        User user = userRepository.findByEmailAddress(emailAddress);
+        if (user != null) {
+            return user;
+        }
+        Vendor vendor = vendorRepository.findByEmailAddress(emailAddress);
+        if (vendor != null) {
+            return vendor;
+        }
+        return adminRepository.findByEmailAddress(emailAddress);
+    }
+
 }
 

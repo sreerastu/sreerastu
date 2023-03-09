@@ -48,7 +48,7 @@ public class MailService {
         vendorRepository.save(vendorByEmailAddress);
         javaMailSender.send(message);
         log.info("Mail Sent Successfully......");
-        return randomPwd;
+        return "Mail Sent Successfully......!" ;
 
     }
 

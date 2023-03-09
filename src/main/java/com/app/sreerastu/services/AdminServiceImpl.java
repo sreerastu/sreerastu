@@ -1,14 +1,18 @@
 package com.app.sreerastu.services;
 
 import com.app.sreerastu.domain.Admin;
+import com.app.sreerastu.domain.Vendor;
 import com.app.sreerastu.exception.AdminNotFoundException;
 import com.app.sreerastu.repositories.AdminRepository;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class AdminServiceImpl implements AdminService {
+public class AdminServiceImpl implements AdminService, UserDetailsService {
 
 
     //  @Autowired
@@ -60,11 +64,15 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public Admin authenticate(String emailAddress, String password) {
         return adminRepository.findByEmailAddressAndPassword(emailAddress, password);
+    }
 
-/*        if (Objects.isNull(loginResult)) {
-            throw new AuthenticationException("Invalid credentials");
+    @Override
+    public UserDetails loadUserByUsername(String emailAddress) throws UsernameNotFoundException {
+        Admin admin = adminRepository.findByEmailAddress(emailAddress);
+        if (admin == null) {
+            throw new UsernameNotFoundException("Admin not found with email address: " + emailAddress);
         }
-        return "Login Successful";*/
+        return new org.springframework.security.core.userdetails.User(admin.getEmailAddress(), admin.getPassword(), admin.getAuthorities());
     }
 
 }

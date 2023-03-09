@@ -5,12 +5,15 @@ import com.app.sreerastu.exception.AuthenticationException;
 import com.app.sreerastu.exception.DuplicateUserException;
 import com.app.sreerastu.exception.InvalidUserIdException;
 import com.app.sreerastu.repositories.UserRepository;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService, UserDetailsService {
 
     public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -63,12 +66,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public User authenticate(String emailAddress, String password) throws AuthenticationException {
         return userRepository.findByEmailAddressAndPassword(emailAddress, password);
-
-       /* //Response
-        if (Objects.isNull(loginResult)) {
-            throw new AuthenticationException("Invalid credentials");
-        }
-        return "Login Successful";*/
     }
 
     @Override
@@ -76,8 +73,13 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByEmailAddress(emailAddress);
     }
 
-   /* public List<Booking> getBookingsByUserId(int userId) throws UserNotFoundException {
-        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found"));
-        return user.getBookings();
-     }*/
+
+    @Override
+    public UserDetails loadUserByUsername(String emailAddress) throws UsernameNotFoundException {
+        User user = userRepository.findByEmailAddress(emailAddress);
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found with email address: " + emailAddress);
+        }
+        return new org.springframework.security.core.userdetails.User(user.getEmailAddress(), user.getPassword(), user.getAuthorities());
+    }
 }

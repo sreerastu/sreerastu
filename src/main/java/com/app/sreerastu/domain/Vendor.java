@@ -1,18 +1,18 @@
 package com.app.sreerastu.domain;
 
-import com.app.sreerastu.Enum.Gender;
-import com.app.sreerastu.Enum.VendorCategory;
-import com.app.sreerastu.Enum.VendorStatus;
-import com.app.sreerastu.Enum.VendorType;
-import jakarta.persistence.*;
+import com.app.sreerastu.Enum.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import javax.persistence.*;
+
+import java.util.*;
 
 @Data
 @AllArgsConstructor
@@ -20,7 +20,7 @@ import java.util.List;
 @ToString
 @Entity
 @Table(name = "VENDOR_TBL")
-public class Vendor {
+public class Vendor implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected int vendorId;
@@ -37,14 +37,14 @@ public class Vendor {
     protected String businessStartDate;
     protected String businessYear;
     protected String businessRegistrationDate;
-    /*@Lob
-    @Column(name = "logo", nullable = true)
-    private byte[] logo;*/
     protected String aadharNumber;
     protected String panNumber;
 
     @Enumerated(EnumType.STRING)
     private  VendorCategory vendorCategory;
+
+    @Enumerated(EnumType.STRING)
+    private RoleType role;
 
     @Enumerated(EnumType.STRING)
     protected VendorStatus vendorStatus;
@@ -57,6 +57,46 @@ public class Vendor {
 
     @Enumerated(EnumType.STRING)
     protected VendorType vendorType;
+
+    @Override
+    @JsonIgnore
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        Set<GrantedAuthority> authorities = new HashSet<>();
+
+        authorities.add(new SimpleGrantedAuthority(role.name()));
+
+        return authorities;
+    }
+
+    @Override
+    @JsonIgnore
+    public String getUsername() {
+        return this.getEmailAddress();
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isEnabled() {
+        return true;
+    }
 }
 
 

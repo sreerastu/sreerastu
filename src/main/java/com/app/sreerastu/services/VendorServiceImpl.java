@@ -2,15 +2,19 @@ package com.app.sreerastu.services;
 
 import com.app.sreerastu.Enum.VendorCategory;
 import com.app.sreerastu.Enum.VendorStatus;
-import com.app.sreerastu.domain.Booking;
-import com.app.sreerastu.domain.User;
 import com.app.sreerastu.domain.Vendor;
-import com.app.sreerastu.exception.*;
+import com.app.sreerastu.exception.AuthenticationException;
+import com.app.sreerastu.exception.DuplicateVendorException;
+import com.app.sreerastu.exception.InvalidVendorIdException;
+import com.app.sreerastu.exception.VendorNotFoundException;
 import com.app.sreerastu.repositories.UserRepository;
 import com.app.sreerastu.repositories.VendorRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
 
@@ -21,7 +25,7 @@ import java.util.stream.Collectors;
 
 
 @Service
-public class VendorServiceImpl implements VendorService {
+public class VendorServiceImpl implements VendorService, UserDetailsService {
 
     final static Logger log = LoggerFactory.getLogger(VendorServiceImpl.class);
 
@@ -142,25 +146,6 @@ public class VendorServiceImpl implements VendorService {
         return vendorRepository.findByEmailAddress(emailAddress);
     }
 
-
-    public Booking bookVendor(int userId, int vendorId) throws VendorNotFoundException, UserNotFoundException, VendorNotAvailableException {
-        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found"));
-        Vendor vendor = vendorRepository.findById(vendorId).orElseThrow(() -> new VendorNotFoundException("Vendor not found"));
-
-        if (vendor.getVendorStatus() == VendorStatus.ACTIVE) {
-            Booking booking = new Booking();
-            booking.setUser(user);
-            booking.setVendor(vendor);
-            //  bookingService.createBooking(booking);
-
-            vendor.setVendorStatus(VendorStatus.HOLD);
-            vendorRepository.save(vendor);
-            return booking;
-        } else {
-            throw new VendorNotAvailableException("Vendor not available for booking");
-        }
-    }
-
     public Vendor updateVendorStatus(int vendorId) throws VendorNotFoundException {
         Vendor vendor = vendorRepository.findById(vendorId).orElseThrow(() -> new VendorNotFoundException("Vendor not found"));
 
@@ -170,13 +155,6 @@ public class VendorServiceImpl implements VendorService {
         }
         return vendor;
     }
-
-
-   /* public List<Booking> getBookingsByVendorId(int vendorId) throws VendorNotFoundException {
-        Vendor vendor = vendorRepository.findById(vendorId).orElseThrow(() -> new VendorNotFoundException("Vendor not found"));
-        return vendor.getBookings();
-    }
-*/
 
     public Vendor updateIsApproved(int vendorId) throws VendorNotFoundException {
         Vendor vendor = vendorRepository.findById(vendorId).orElseThrow(() -> new VendorNotFoundException("Vendor not found"));
@@ -191,6 +169,16 @@ public class VendorServiceImpl implements VendorService {
         List<Vendor> collection = vendors.stream().filter(n -> n.getIsApproved() == false).collect(Collectors.toList());
 
         return collection;
+    }
+
+
+    @Override
+    public UserDetails loadUserByUsername(String emailAddress) throws UsernameNotFoundException {
+        Vendor vendor = vendorRepository.findByEmailAddress(emailAddress);
+        if (vendor == null) {
+            throw new UsernameNotFoundException("Vendor not found with email address: " + emailAddress);
+        }
+        return new org.springframework.security.core.userdetails.User(vendor.getEmailAddress(), vendor.getPassword(), vendor.getAuthorities());
     }
 }
 

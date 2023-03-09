@@ -1,22 +1,29 @@
 package com.app.sreerastu.controllers;
 
-import com.app.sreerastu.domain.Admin;
-import com.app.sreerastu.domain.User;
-import com.app.sreerastu.domain.Vendor;
+import com.app.sreerastu.dto.JwtResponse;
 import com.app.sreerastu.dto.LoginApiDto;
 import com.app.sreerastu.exception.AuthenticationException;
 import com.app.sreerastu.services.AdminServiceImpl;
 import com.app.sreerastu.services.MailService;
 import com.app.sreerastu.services.UserServiceImpl;
 import com.app.sreerastu.services.VendorServiceImpl;
+import com.app.sreerastu.util.JwtUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api")
 public class AuthenticationController {
+
+    final static Logger log = LoggerFactory.getLogger(AuthenticationController.class);
 
     public AuthenticationController(VendorServiceImpl vendorService) {
         this.vendorService = vendorService;
@@ -30,31 +37,49 @@ public class AuthenticationController {
     @Autowired
     private MailService mailService;
 
+    @Autowired
+    private JwtUtil jwtUtil;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
 
     @PostMapping("/authenticate")
     public ResponseEntity<?> authenticate(@RequestBody LoginApiDto loginCredentials) throws AuthenticationException {
 
-        // Check if the login credentials belong to a vendor
-        Vendor vendor = vendorService.authenticate(loginCredentials.getEmailAddress(), loginCredentials.getPassword());
-        if (vendor != null) {
-            return ResponseEntity.ok("Vendor logged in successfully!");
+        try {
+            this.authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginCredentials.getEmailAddress(), loginCredentials.getPassword()));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new AuthenticationException("Invalid details provided");
         }
-
-        // Check if the login credentials belong to a user
-        User user = userService.authenticate(loginCredentials.getEmailAddress(), loginCredentials.getPassword());
-        if (user != null) {
-            return ResponseEntity.ok("User logged in successfully!");
+        try {
+            String token;
+            UserDetails vendorDetails = this.vendorService.loadUserByUsername(loginCredentials.getEmailAddress());
+            if (vendorDetails != null) {
+                String role = vendorDetails.getAuthorities().iterator().next().getAuthority();
+                token = this.jwtUtil.generateToken(vendorDetails, role);
+                log.info("JWT" + token);
+                return ResponseEntity.ok(new JwtResponse(token));
+            }
+            UserDetails userDetails = this.userService.loadUserByUsername(loginCredentials.getEmailAddress());
+            if (userDetails != null) {
+                String role = userDetails.getAuthorities().iterator().next().getAuthority();
+                token = this.jwtUtil.generateToken(userDetails, role);
+                log.info("JWT" + token);
+                return ResponseEntity.ok(new JwtResponse(token));
+            }
+            UserDetails adminDetails = this.adminService.loadUserByUsername(loginCredentials.getEmailAddress());
+            if (adminDetails != null) {
+                String role = adminDetails.getAuthorities().iterator().next().getAuthority();
+                token = this.jwtUtil.generateToken(adminDetails, role);
+                log.info("JWT" + token);
+                return ResponseEntity.ok(new JwtResponse(token));
+            }
+        } catch (Exception ex) {
+            throw new UsernameNotFoundException("User not found with email address: " + loginCredentials.getEmailAddress());
         }
-
-        // Check if the login credentials belong to admin
-        Admin admin = adminService.authenticate(loginCredentials.getEmailAddress(), loginCredentials.getPassword());
-
-        if (admin != null) {
-            return ResponseEntity.ok("Admin logged in successfully!");
-        }
-
-        // If none of the login credentials are valid, return an error response
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
+        return null;
     }
 
     @PostMapping("/resetPassword/{emailAddress}")

@@ -7,4 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface AdminRepository extends JpaRepository<Admin, Integer>{
 
     Admin findByEmailAddressAndPassword(String emailAddress , String password);
+
+    Admin findByEmailAddress(String emailAddress);
+
 }

@@ -22,12 +22,12 @@ spring:
           starttls:
             enable: true
   datasource:
-    url: jdbc:postgresql://localhost:5432/sreerastuDb
-    #    url: jdbc:postgresql://postgresdb.cu0ghcs3xhjo.us-east-1.rds.amazonaws.com:5432/sreerastuDb
+#    url: jdbc:postgresql://localhost:5432/sreerastuDb
+    url: jdbc:postgresql://postgresdb.cu0ghcs3xhjo.us-east-1.rds.amazonaws.com:5432/sreerastuDb
 
     username: postgres
-    #    password: Headway123
-    password: root
+    password: Headway123
+#    password: root
   jpa:
     properties:
       hibernate:

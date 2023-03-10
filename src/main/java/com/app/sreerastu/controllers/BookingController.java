@@ -6,11 +6,16 @@ import com.app.sreerastu.exception.UserNotFoundException;
 import com.app.sreerastu.exception.VendorNotAvailableException;
 import com.app.sreerastu.exception.VendorNotFoundException;
 import com.app.sreerastu.services.BookingServiceImpl;
+import com.razorpay.Order;
+import com.razorpay.RazorpayException;
+import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.razorpay.RazorpayClient;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -52,5 +57,20 @@ public class BookingController {
         String cancel = bookingService.cancelBooking(bookingId);
         return ResponseEntity.status(HttpStatus.OK).body(cancel);
 
+    }
+
+    @PostMapping("/create_order")
+    public String createOrder(@RequestBody Map<String, Object> data) throws RazorpayException {
+
+        int amt = Integer.parseInt(data.get("amount").toString());
+        var client = new RazorpayClient("rzp_test_mOsWfEZouKIqSx", "XgOFZ2sYI2nTODoh6Hwq1r05");
+
+        JSONObject obj = new JSONObject();
+        obj.put("amount",amt*100);
+        obj.put("currency","INR");
+        obj.put("receipt","txn_12746467");
+
+        Order order = client.orders.create(obj);
+        return order.toString();
     }
 }

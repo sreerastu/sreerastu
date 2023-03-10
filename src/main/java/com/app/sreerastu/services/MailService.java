@@ -59,19 +59,4 @@ public class MailService {
         log.info(pwd);
         return pwd;
     }
-
-    public String sendMailBySearch(String emailAddress) throws Exception {
-
-        MimeMessage message = javaMailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message);
-        helper.setSubject("User is Searching! ");
-        helper.setText("user is searching for vendors!");
-        helper.setFrom(sender);
-        helper.setTo(emailAddress);
-        javaMailSender.send(message);
-        log.info("Mail Sent Successfully......");
-        return "Mail Sent Successfully......!";
-
-    }
-
 }

@@ -2,30 +2,24 @@ package com.app.sreerastu.controllers;
 
 import com.app.sreerastu.Enum.VendorCategory;
 import com.app.sreerastu.domain.Admin;
-import com.app.sreerastu.domain.User;
 import com.app.sreerastu.domain.Vendor;
 import com.app.sreerastu.exception.DuplicateVendorException;
 import com.app.sreerastu.exception.InvalidVendorIdException;
 import com.app.sreerastu.exception.VendorNotFoundException;
-import com.app.sreerastu.repositories.VendorRepository;
 import com.app.sreerastu.services.AdminServiceImpl;
 import com.app.sreerastu.services.UserServiceImpl;
 import com.app.sreerastu.services.VendorServiceImpl;
+import com.app.sreerastu.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.security.Principal;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("api")
@@ -34,9 +28,6 @@ public class VendorController {
     @Value("${spring.mail.username}")
     private String sender;
     private VendorServiceImpl vendorService;
-   /* @Autowired
-    private VendorRepository vendorRepository;
-*/
 
     @Autowired
     private JavaMailSender javaMailSender;
@@ -46,6 +37,9 @@ public class VendorController {
 
     @Autowired
     private AdminServiceImpl adminService;
+
+    @Autowired
+    private JwtUtil jwtUtil;
 
 
     public VendorController(VendorServiceImpl vendorService) {
@@ -89,26 +83,21 @@ public class VendorController {
 
     @GetMapping("/vendors/categories")
     public ResponseEntity<?> getVendorByVendorCategory(@RequestParam("vendorCategory") VendorCategory vendorCategory,
-                                                       Principal principal) throws Exception {
+                                                       @RequestHeader("Authorization") String tokenHeader) throws Exception {
 
         List<Vendor> vendors = vendorService.getVendorsByCategoryType(vendorCategory);
-        String userEmail = null;
-        if (principal != null) {
-            userEmail = principal.getName();
-            User userByMail = userService.getUserByMail(userEmail);
+        String token = tokenHeader.substring(7);
+        String username = jwtUtil.extractUsername(token);
+        Object userDetails = vendorService.findUserOrVendorOrAdminByEmailAddress(username);
+        Admin adminById = adminService.getAdminById(3);
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(sender);
+        message.setTo(adminById.getEmailAddress());
+        message.setSubject("New vendor category selected");
+        message.setText("A user with Id:" + userDetails + "has selected the vendor categories!");
+        javaMailSender.send(message);
+        return ResponseEntity.status(HttpStatus.OK).body(vendors);
 
-            Admin adminById = adminService.getAdminById(1);
-
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom(sender);
-            message.setTo(adminById.getEmailAddress());
-            message.setSubject("New vendor category selected");
-            message.setText("A user with " + userByMail + "has selected the vendor categories!");
-            javaMailSender.send(message);
-            return ResponseEntity.status(HttpStatus.OK).body(vendors);
-        } else {
-            throw new RuntimeException();
-        }
     }
 
     @PatchMapping("/vendor/{vendorId}")

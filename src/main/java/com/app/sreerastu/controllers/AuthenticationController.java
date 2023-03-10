@@ -46,6 +46,8 @@ public class AuthenticationController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
+   /* @Autowired
+    private UserDetailsService userDetailsService;*/
 
     @PostMapping("/authenticate")
     public ResponseEntity<?> authenticate(@RequestBody LoginApiDto loginCredentials) throws AuthenticationException {
@@ -87,12 +89,21 @@ public class AuthenticationController {
             throw new UsernameNotFoundException("User not found with email address: " + loginCredentials.getEmailAddress());
         }
     }
+
     @PostMapping("/resetPassword/{emailAddress}")
     public ResponseEntity<?> resetPassword(@PathVariable String emailAddress) throws Exception {
 
         mailService.sendMail(emailAddress);
 
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.status(HttpStatus.OK).body("Mail Sent Successfully......!");
 
-    } 
+    }
+
+    @GetMapping("/user")
+    public ResponseEntity<?> getUser(@RequestHeader("Authorization") String tokenHeader) {
+        String token = tokenHeader.substring(7);
+        String username = jwtUtil.extractUsername(token);
+        Object userDetails = vendorService.findUserOrVendorOrAdminByEmailAddress(username);
+        return ResponseEntity.ok(userDetails);
+    }
 }

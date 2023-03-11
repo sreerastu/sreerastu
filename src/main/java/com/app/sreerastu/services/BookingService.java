@@ -13,7 +13,7 @@ public interface BookingService {
 
     Booking getBookingById(int bookingId) throws BookingNotFoundException;
 
-    Booking createBooking(int userId, int vendorId) throws UserNotFoundException, VendorNotFoundException, VendorNotAvailableException;
+    Booking createBooking(int userId, int vendorId,int amount) throws UserNotFoundException, VendorNotFoundException, VendorNotAvailableException;
 
     String cancelBooking(int bookingId) throws BookingNotFoundException;
 

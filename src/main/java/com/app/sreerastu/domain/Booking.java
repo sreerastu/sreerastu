@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -30,6 +31,7 @@ public class Booking {
     @Column(nullable = false)
     private LocalDateTime bookingTime = LocalDateTime.now();
 
-
+    @Column(nullable = false)
+    private int amount;
 }
 

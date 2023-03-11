@@ -1,5 +1,6 @@
 package com.app.sreerastu.controllers;
 
+import com.app.sreerastu.Enum.VendorType;
 import com.app.sreerastu.domain.Booking;
 import com.app.sreerastu.exception.BookingNotFoundException;
 import com.app.sreerastu.exception.UserNotFoundException;
@@ -37,10 +38,10 @@ public class BookingController {
         return bookingService.getBookingById(bookingId);
     }
 
-    @PostMapping("/user/booking/{userId}/{vendorId}")
+   /* @PostMapping("/user/booking/{userId}/{vendorId}")
     public Booking createBooking(@PathVariable int userId, @PathVariable int vendorId) throws UserNotFoundException, VendorNotFoundException, VendorNotAvailableException {
         return bookingService.createBooking(userId, vendorId);
-    }
+    }*/
 
     @GetMapping("/user/{userId}/bookings")
     public List<Booking> getBookingsForUser(@PathVariable int userId) throws UserNotFoundException {
@@ -58,19 +59,51 @@ public class BookingController {
         return ResponseEntity.status(HttpStatus.OK).body(cancel);
 
     }
+    @PostMapping("/user/booking-and-order/{userId}/{vendorId}/{amount}")
+    public String createBookingAndOrder(@PathVariable int userId, @PathVariable int vendorId, @PathVariable int amount) throws UserNotFoundException, VendorNotFoundException, VendorNotAvailableException, RazorpayException {
+        // Create the booking first
+        Booking booking = bookingService.createBooking(userId, vendorId,amount);
 
-    @PostMapping("/create_order")
-    public String createOrder(@RequestBody Map<String, Object> data) throws RazorpayException {
+        // Create the Razorpay order
+        var client = new RazorpayClient("rzp_test_mOsWfEZouKIqSx", "XgOFZ2sYI2nTODoh6Hwq1r05");
+        JSONObject obj = new JSONObject();
+        obj.put("amount", amount * 100);
+        obj.put("currency", "INR");
+        obj.put("receipt", "txn_12746467");
+        Order order = client.orders.create(obj);
 
-        int amt = Integer.parseInt(data.get("amount").toString());
+        // Return a string containing both the booking and order details
+        return "Booking: " + booking.toString() + "\n\nOrder: " + order.toString();
+    }
+
+
+    @PostMapping("user/create_order/{amount}")
+    public String createOrder(@PathVariable int amount) throws RazorpayException {
         var client = new RazorpayClient("rzp_test_mOsWfEZouKIqSx", "XgOFZ2sYI2nTODoh6Hwq1r05");
 
         JSONObject obj = new JSONObject();
-        obj.put("amount",amt*100);
-        obj.put("currency","INR");
-        obj.put("receipt","txn_12746467");
+        obj.put("amount", amount * 100);
+        obj.put("currency", "INR");
+        obj.put("receipt", "txn_12746467");
 
         Order order = client.orders.create(obj);
         return order.toString();
     }
+
+
+    @PostMapping("/create_order/{vendorType}")
+    public String createOrderWithVendorType(@RequestBody Map<String, Object> data, @PathVariable VendorType vendorType) throws RazorpayException {
+        int amt = Integer.parseInt(data.get("amount").toString());
+        var client = new RazorpayClient("rzp_test_mOsWfEZouKIqSx", "XgOFZ2sYI2nTODoh6Hwq1r05");
+
+        JSONObject obj = new JSONObject();
+        obj.put("amount", amt * 100);
+        obj.put("currency", "INR");
+        obj.put("receipt", "txn_858543435");
+        obj.put("notes", Map.of("vendor_type", vendorType.toString()));
+
+        Order order = client.orders.create(obj);
+        return order.toString();
+    }
+
 }

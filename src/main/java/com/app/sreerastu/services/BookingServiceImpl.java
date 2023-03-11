@@ -47,7 +47,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public Booking createBooking(int userId, int vendorId) throws UserNotFoundException, VendorNotFoundException, VendorNotAvailableException {
+    public Booking createBooking(int userId, int vendorId, int amount) throws UserNotFoundException, VendorNotFoundException, VendorNotAvailableException {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User not found with id " + userId));
         Vendor vendor = vendorRepository.findById(vendorId)
@@ -63,6 +63,7 @@ public class BookingServiceImpl implements BookingService {
         Booking booking = new Booking();
         booking.setUser(user);
         booking.setVendor(vendor);
+        booking.setAmount(amount);
         booking.setBookingTime(LocalDateTime.now());
 
         return bookingRepository.save(booking);

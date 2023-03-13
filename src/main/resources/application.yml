@@ -48,6 +48,11 @@ eureka:
 
 
 
+#Swagger
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
 
 
 

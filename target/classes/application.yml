@@ -5,8 +5,8 @@ server:
 
 #smtp configuration and database configuration
 spring:
-  main:
-    allow-circular-references: true
+#  main:
+#    allow-circular-references: true
 
 
   mail:
@@ -47,6 +47,11 @@ eureka:
       defaultZone: http://postgresdb.cu0ghcs3xhjo.us-east-1.rds.amazonaws.com:5432/eureka/
 
 
+
+#Swagger
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
 
 
 

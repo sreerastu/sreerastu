@@ -42,8 +42,8 @@ public class VendorServiceImpl implements VendorService, UserDetailsService {
 
     @Autowired
     private AdminRepository adminRepository;
-    @Autowired
-    private MailService mailService;
+    /*@Autowired
+    private MailService mailService;*/
 
     @Autowired
     private BookingServiceImpl bookingService;

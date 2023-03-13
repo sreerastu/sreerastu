@@ -5,8 +5,8 @@ server:
 
 #smtp configuration and database configuration
 spring:
-  main:
-    allow-circular-references: true
+#  main:
+#    allow-circular-references: true
 
 
   mail:

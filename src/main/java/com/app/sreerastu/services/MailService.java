@@ -1,3 +1,4 @@
+/*
 package com.app.sreerastu.services;
 
 import com.app.sreerastu.domain.Vendor;
@@ -60,3 +61,4 @@ public class MailService {
         return pwd;
     }
 }
+*/

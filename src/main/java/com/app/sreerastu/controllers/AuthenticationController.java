@@ -8,6 +8,7 @@ import com.app.sreerastu.dto.LoginApiDto;
 import com.app.sreerastu.exception.AuthenticationException;
 import com.app.sreerastu.services.AdminServiceImpl;
 //import com.app.sreerastu.services.MailService;
+import com.app.sreerastu.services.MailService;
 import com.app.sreerastu.services.UserServiceImpl;
 import com.app.sreerastu.services.VendorServiceImpl;
 import com.app.sreerastu.util.JwtUtil;
@@ -37,9 +38,9 @@ public class AuthenticationController {
     private UserServiceImpl userService;
     @Autowired
     private AdminServiceImpl adminService;
-   /* @Autowired
+    @Autowired
     private MailService mailService;
-*/
+
     @Autowired
     private JwtUtil jwtUtil;
 
@@ -89,14 +90,14 @@ public class AuthenticationController {
         }
     }
 
-   /* @PostMapping("/resetPassword/{emailAddress}")
+    @PostMapping("/resetPassword/{emailAddress}")
     public ResponseEntity<?> resetPassword(@PathVariable String emailAddress) throws Exception {
 
         mailService.sendMail(emailAddress);
 
         return ResponseEntity.status(HttpStatus.OK).body("Mail Sent Successfully......!");
 
-    }*/
+    }
 
     @GetMapping("/user")
     public ResponseEntity<?> getUser(@RequestHeader("Authorization") String tokenHeader) {

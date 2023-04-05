@@ -8,6 +8,7 @@ import com.app.sreerastu.services.VendorServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,10 +27,16 @@ public class UserController {
     @Autowired
     private VendorServiceImpl vendorService;
 
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+
     @PostMapping("/user")
     public ResponseEntity<?> createUser(@RequestBody User user) throws DuplicateUserException {
 
         User createdUser = userService.createUser(user);
+        //BcryptPasswordEncoder
+
+        user.setPassword(this.bCryptPasswordEncoder.encode(user.getPassword()));
         return ResponseEntity.status(HttpStatus.OK).body(createdUser);
     }
 

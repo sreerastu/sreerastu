@@ -10,6 +10,7 @@ import com.app.sreerastu.services.VendorServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,16 +31,20 @@ public class AdminController {
     @Autowired
     private UserServiceImpl userService;
 
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+
     @PostMapping("/admin")
     public ResponseEntity<?> createAdmin(@RequestBody Admin admin) {
 
         Admin createdAdmin = adminService.createAdmin(admin);
+        //BcryptPasswordEncoder
+        admin.setPassword(this.bCryptPasswordEncoder.encode(admin.getPassword()));
         return ResponseEntity.status(HttpStatus.OK).body(createdAdmin);
     }
 
     @PutMapping("/admin/{adminId}")
-    public ResponseEntity<?> updateAdmin(@PathVariable int adminId,
-                                         @RequestBody Admin adminX) throws AdminNotFoundException {
+    public ResponseEntity<?> updateAdmin(@PathVariable int adminId, @RequestBody Admin adminX) throws AdminNotFoundException {
         Admin admin = adminService.updateAdmin(adminId, adminX);
         return ResponseEntity.status(HttpStatus.OK).body(admin);
     }
@@ -74,5 +79,6 @@ public class AdminController {
         Vendor vendor = vendorService.updateIsApproved(vendorId);
         return ResponseEntity.status(HttpStatus.OK).body(vendor);
     }
+
 
 }

@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -41,6 +42,9 @@ public class VendorController {
     @Autowired
     private JwtUtil jwtUtil;
 
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+
 
     public VendorController(VendorServiceImpl vendorService) {
         this.vendorService = vendorService;
@@ -50,6 +54,8 @@ public class VendorController {
     public ResponseEntity<?> createVendor(@RequestBody Vendor vendor) throws DuplicateVendorException {
 
         Vendor createdVendor = vendorService.createVendor(vendor);
+        //BcryptPasswordEncoder
+        vendor.setPassword(this.bCryptPasswordEncoder.encode(vendor.getPassword()));
         return ResponseEntity.status(HttpStatus.OK).body(createdVendor);
         // body("Your Application is Under Processing,and Approved with in 24hrs");
     }

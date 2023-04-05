@@ -5,9 +5,11 @@ import com.app.sreerastu.exception.AuthenticationException;
 import com.app.sreerastu.exception.DuplicateUserException;
 import com.app.sreerastu.exception.InvalidUserIdException;
 import com.app.sreerastu.repositories.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,6 +22,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     private UserRepository userRepository;
+
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 
     @Override
@@ -38,7 +43,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         existingUser.setLastName(user.getLastName());
         existingUser.setContactNumber(user.getContactNumber());
         existingUser.setEmailAddress(user.getEmailAddress());
-        existingUser.setPassword(user.getPassword());
+        existingUser.setPassword(this.bCryptPasswordEncoder.encode(user.getPassword()));
         return userRepository.save(existingUser);
 
     }

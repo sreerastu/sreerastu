@@ -3,6 +3,7 @@ package com.app.sreerastu.services;
 import com.app.sreerastu.domain.Booking;
 import com.app.sreerastu.domain.User;
 import com.app.sreerastu.exception.*;
+import com.razorpay.RazorpayException;
 
 import java.util.List;
 
@@ -13,7 +14,7 @@ public interface BookingService {
 
     Booking getBookingById(int bookingId) throws BookingNotFoundException;
 
-    Booking createBooking(int userId, int vendorId,int amount) throws UserNotFoundException, VendorNotFoundException, VendorNotAvailableException;
+    Booking createBooking(int userId, int vendorId,int amount) throws UserNotFoundException, VendorNotFoundException, VendorNotAvailableException, RazorpayException;
 
     String cancelBooking(int bookingId) throws BookingNotFoundException;
 

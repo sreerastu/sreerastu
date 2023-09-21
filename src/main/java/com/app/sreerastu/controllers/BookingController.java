@@ -2,6 +2,7 @@ package com.app.sreerastu.controllers;
 
 import com.app.sreerastu.Enum.VendorType;
 import com.app.sreerastu.domain.Booking;
+import com.app.sreerastu.domain.SubscriptionBooking;
 import com.app.sreerastu.exception.BookingNotFoundException;
 import com.app.sreerastu.exception.UserNotFoundException;
 import com.app.sreerastu.exception.VendorNotAvailableException;
@@ -17,6 +18,7 @@ import com.razorpay.RazorpayClient;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api")
@@ -60,23 +62,16 @@ public class BookingController {
 
     }
     @PostMapping("/user/booking-and-order/{userId}/{vendorId}/{amount}")
-    public String createBookingAndOrder(@PathVariable int userId, @PathVariable int vendorId, @PathVariable int amount) throws UserNotFoundException, VendorNotFoundException, VendorNotAvailableException, RazorpayException {
-        // Create the booking first
+    public ResponseEntity<?> createBookingAndOrder(@PathVariable int userId, @PathVariable int vendorId, @PathVariable int amount) throws UserNotFoundException, VendorNotFoundException, VendorNotAvailableException, RazorpayException {
         Booking booking = bookingService.createBooking(userId, vendorId,amount);
 
-        // Create the Razorpay order
-        var client = new RazorpayClient("rzp_test_mOsWfEZouKIqSx", "XgOFZ2sYI2nTODoh6Hwq1r05");
-        JSONObject obj = new JSONObject();
-        obj.put("amount", amount * 100);
-        obj.put("currency", "INR");
-        obj.put("receipt", "txn_12746467");
-        Order order = client.orders.create(obj);
-
-        // Return a string containing both the booking and order details
-        return "Booking: " + booking.toString() + "\n\nOrder: " + order.toString();
-    }
-
-
+            if (booking != null) {
+                return ResponseEntity.ok(booking);
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Booking  failed");
+            }
+        }
     @PostMapping("user/create_order/{amount}")
     public String createOrder(@PathVariable int amount) throws RazorpayException {
         var client = new RazorpayClient("rzp_test_mOsWfEZouKIqSx", "XgOFZ2sYI2nTODoh6Hwq1r05");
@@ -91,19 +86,16 @@ public class BookingController {
     }
 
 
-    @PostMapping("/create_order/{vendorType}")
-    public String createOrderWithVendorType(@RequestBody Map<String, Object> data, @PathVariable VendorType vendorType) throws RazorpayException {
-        int amt = Integer.parseInt(data.get("amount").toString());
-        var client = new RazorpayClient("rzp_test_mOsWfEZouKIqSx", "XgOFZ2sYI2nTODoh6Hwq1r05");
+    @PostMapping("/create_order/{amount}/{vendorId}")
+    public ResponseEntity<?> vendorSubscription(@PathVariable int amount, @PathVariable int vendorId) throws RazorpayException, VendorNotFoundException {
+        SubscriptionBooking booking = bookingService.vendorSubscription(amount,vendorId);
 
-        JSONObject obj = new JSONObject();
-        obj.put("amount", amt * 100);
-        obj.put("currency", "INR");
-        obj.put("receipt", "txn_858543435");
-        obj.put("notes", Map.of("vendor_type", vendorType.toString()));
-
-        Order order = client.orders.create(obj);
-        return order.toString();
+        if (booking != null) {
+            return ResponseEntity.ok(booking);
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Subscription failed");
+        }
     }
 
 }

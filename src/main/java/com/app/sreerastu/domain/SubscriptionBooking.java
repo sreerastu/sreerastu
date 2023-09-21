@@ -1,6 +1,5 @@
 package com.app.sreerastu.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,17 +11,12 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "BOOKING_TBL")
-public class Booking {
-
+@Table(name = "SUBSCRIPTION_TBL")
+public class SubscriptionBooking {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int bookingId;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "userId", nullable = false)
-    private User user;
+    private int subscriptionId;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "vendorId", nullable = false)
@@ -37,4 +31,3 @@ public class Booking {
     @Column(name = "receipt_id")
     private String receiptId;
 }
-

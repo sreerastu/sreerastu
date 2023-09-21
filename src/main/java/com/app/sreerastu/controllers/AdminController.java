@@ -31,15 +31,15 @@ public class AdminController {
     @Autowired
     private UserServiceImpl userService;
 
-    @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+//    @Autowired
+//    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @PostMapping("/admin")
     public ResponseEntity<?> createAdmin(@RequestBody Admin admin) {
 
         Admin createdAdmin = adminService.createAdmin(admin);
         //BcryptPasswordEncoder
-        admin.setPassword(this.bCryptPasswordEncoder.encode(admin.getPassword()));
+       // admin.setPassword(this.bCryptPasswordEncoder.encode(admin.getPassword()));
         return ResponseEntity.status(HttpStatus.OK).body(createdAdmin);
     }
 

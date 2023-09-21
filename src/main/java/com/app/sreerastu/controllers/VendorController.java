@@ -42,8 +42,8 @@ public class VendorController {
     @Autowired
     private JwtUtil jwtUtil;
 
-    @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+//    @Autowired
+//    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 
     public VendorController(VendorServiceImpl vendorService) {
@@ -55,7 +55,7 @@ public class VendorController {
 
         Vendor createdVendor = vendorService.createVendor(vendor);
         //BcryptPasswordEncoder
-        vendor.setPassword(this.bCryptPasswordEncoder.encode(vendor.getPassword()));
+      //  vendor.setPassword(this.bCryptPasswordEncoder.encode(vendor.getPassword()));
         return ResponseEntity.status(HttpStatus.OK).body(createdVendor);
         // body("Your Application is Under Processing,and Approved with in 24hrs");
     }

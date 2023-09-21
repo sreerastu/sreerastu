@@ -23,9 +23,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     private UserRepository userRepository;
 
-    @Autowired
+  /*  @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
-
+*/
 
     @Override
     public User createUser(User user) throws DuplicateUserException {
@@ -43,7 +43,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         existingUser.setLastName(user.getLastName());
         existingUser.setContactNumber(user.getContactNumber());
         existingUser.setEmailAddress(user.getEmailAddress());
-        existingUser.setPassword(this.bCryptPasswordEncoder.encode(user.getPassword()));
+      //  existingUser.setPassword(this.bCryptPasswordEncoder.encode(user.getPassword()));
         return userRepository.save(existingUser);
 
     }

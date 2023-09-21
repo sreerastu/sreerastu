@@ -106,4 +106,11 @@ public class AuthenticationController {
         Object userDetails = vendorService.findUserOrVendorOrAdminByEmailAddress(username);
         return ResponseEntity.ok(userDetails);
     }
+
+
+    @PostMapping("/user/login")
+    public ResponseEntity<?> loginUser(@RequestBody LoginApiDto loginApiDto) throws AuthenticationException {
+        User authenticate = userService.authenticate(loginApiDto.getEmailAddress(), loginApiDto.getPassword());
+        return ResponseEntity.status(HttpStatus.OK).body(authenticate);
+    }
 }

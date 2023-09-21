@@ -11,9 +11,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 
 @Data
@@ -35,7 +33,6 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private RoleType role;
 
-    // Constructor, getters, setters, and other methods
 
     @Override
     @JsonIgnore

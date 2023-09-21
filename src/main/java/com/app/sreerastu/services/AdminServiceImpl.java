@@ -24,8 +24,8 @@ public class AdminServiceImpl implements AdminService, UserDetailsService {
         this.adminRepository = adminRepository;
     }
 
-    @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+  /*  @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;*/
 
 
     @Override
@@ -42,7 +42,7 @@ public class AdminServiceImpl implements AdminService, UserDetailsService {
         existingAdmin.setContactNumber(admin.getContactNumber());
         //existingAdmin.setDob(admin.getDob());
         existingAdmin.setEmailAddress(admin.getEmailAddress());
-        existingAdmin.setPassword(this.bCryptPasswordEncoder.encode(admin.getPassword()));
+       // existingAdmin.setPassword(this.bCryptPasswordEncoder.encode(admin.getPassword()));
         return adminRepository.save(existingAdmin);
     }
 

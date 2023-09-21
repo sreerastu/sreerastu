@@ -27,8 +27,8 @@ public class UserController {
     @Autowired
     private VendorServiceImpl vendorService;
 
-    @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+//    @Autowired
+//    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @PostMapping("/user")
     public ResponseEntity<?> createUser(@RequestBody User user) throws DuplicateUserException {
@@ -36,7 +36,7 @@ public class UserController {
         User createdUser = userService.createUser(user);
         //BcryptPasswordEncoder
 
-        user.setPassword(this.bCryptPasswordEncoder.encode(user.getPassword()));
+      //  user.setPassword(this.bCryptPasswordEncoder.encode(user.getPassword()));
         return ResponseEntity.status(HttpStatus.OK).body(createdUser);
     }
 

@@ -49,15 +49,15 @@ public class VendorServiceImpl implements VendorService, UserDetailsService {
     @Autowired
     private BookingServiceImpl bookingService;
 
-    @Autowired
+  /*  @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
-
+*/
 
     public Vendor createVendor(Vendor vendor) throws DuplicateVendorException {
         try {
             return vendorRepository.save(vendor);
         } catch (Exception ex) {
-            throw new DuplicateVendorException("vendor aleardy exists");
+            throw new DuplicateVendorException("vendor already exists");
         }
     }
 
@@ -79,7 +79,7 @@ public class VendorServiceImpl implements VendorService, UserDetailsService {
         existingVendor.setGender(vendor.getGender());
         existingVendor.setEmailAddress(vendor.getEmailAddress());
         existingVendor.setContactPersonNumber(vendor.getContactPersonNumber());
-        existingVendor.setPassword(this.bCryptPasswordEncoder.encode(vendor.getPassword()));
+      //  existingVendor.setPassword(this.bCryptPasswordEncoder.encode(vendor.getPassword()));
         return vendorRepository.save(existingVendor);
     }
 

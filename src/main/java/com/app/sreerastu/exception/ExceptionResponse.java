@@ -1,9 +1,6 @@
 package com.app.sreerastu.exception;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.http.HttpStatus;
 
 import java.util.Date;
@@ -12,6 +9,7 @@ import java.util.Date;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 public class
 ExceptionResponse {
     private Date timestamp;

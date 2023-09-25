@@ -7,7 +7,6 @@ import com.app.sreerastu.dto.JwtResponse;
 import com.app.sreerastu.dto.LoginApiDto;
 import com.app.sreerastu.exception.AuthenticationException;
 import com.app.sreerastu.services.AdminServiceImpl;
-//import com.app.sreerastu.services.MailService;
 import com.app.sreerastu.services.MailService;
 import com.app.sreerastu.services.UserServiceImpl;
 import com.app.sreerastu.services.VendorServiceImpl;

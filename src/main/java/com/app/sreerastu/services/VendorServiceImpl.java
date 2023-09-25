@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
 
@@ -79,7 +78,7 @@ public class VendorServiceImpl implements VendorService, UserDetailsService {
         existingVendor.setGender(vendor.getGender());
         existingVendor.setEmailAddress(vendor.getEmailAddress());
         existingVendor.setContactPersonNumber(vendor.getContactPersonNumber());
-      //  existingVendor.setPassword(this.bCryptPasswordEncoder.encode(vendor.getPassword()));
+        //  existingVendor.setPassword(this.bCryptPasswordEncoder.encode(vendor.getPassword()));
         return vendorRepository.save(existingVendor);
     }
 

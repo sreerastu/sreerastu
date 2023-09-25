@@ -10,7 +10,6 @@ import com.app.sreerastu.services.VendorServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -39,7 +38,7 @@ public class AdminController {
 
         Admin createdAdmin = adminService.createAdmin(admin);
         //BcryptPasswordEncoder
-       // admin.setPassword(this.bCryptPasswordEncoder.encode(admin.getPassword()));
+        // admin.setPassword(this.bCryptPasswordEncoder.encode(admin.getPassword()));
         return ResponseEntity.status(HttpStatus.OK).body(createdAdmin);
     }
 
